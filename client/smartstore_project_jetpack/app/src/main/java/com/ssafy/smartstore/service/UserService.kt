@@ -27,7 +27,14 @@ class UserService {
                 callback.onError(t)
             }
         })
+
+
+        RetrofitUtil.userService.login(user).enqueue(CustomCallback<User>() {
+            
+        })
+
     }
+
 
 
     fun getId(id: String, callback: RetrofitCallback<Boolean>) {
