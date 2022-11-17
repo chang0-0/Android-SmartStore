@@ -58,24 +58,23 @@ class OrderDetailFragment : Fragment(){
     private fun initData(){
         val orderDetails = OrderService().getOrderDetails(orderId)
         orderDetails.observe(
-            viewLifecycleOwner,
-            { orderDetails ->
-                orderDetails.let {
-                    orderDetailListAdapter = OrderDetailListAdapter(mainActivity, orderDetails)
-                }
-
-                binding.recyclerViewOrderDetailList.apply {
-                    val linearLayoutManager = LinearLayoutManager(context)
-                    linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
-                    layoutManager = linearLayoutManager
-                    adapter = orderDetailListAdapter
-                    //원래의 목록위치로 돌아오게함
-                    adapter!!.stateRestorationPolicy =
-                        RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
-                }
-                setOrderDetailScreen(orderDetails)
+            viewLifecycleOwner
+        ) { orderDetails ->
+            orderDetails.let {
+                orderDetailListAdapter = OrderDetailListAdapter(mainActivity, orderDetails)
             }
-        )
+
+            binding.recyclerViewOrderDetailList.apply {
+                val linearLayoutManager = LinearLayoutManager(context)
+                linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
+                layoutManager = linearLayoutManager
+                adapter = orderDetailListAdapter
+                //원래의 목록위치로 돌아오게함
+                adapter!!.stateRestorationPolicy =
+                    RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
+            }
+            setOrderDetailScreen(orderDetails)
+        }
     }
 
     // OrderDetail 페이지 화면 구성

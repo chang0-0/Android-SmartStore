@@ -85,36 +85,36 @@ class ShoppingListFragment(val orderId : Int) : Fragment() {
                     RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
             }
         }
-        // 최근 주문에서의 주문
+        // 최근 주문 클릭 -> 장바구니에 해당 목록이 담긴 채로 표시
         else {
             val orderDetails = OrderService().getOrderDetails(orderId)
             orderDetails.observe(
-                viewLifecycleOwner,
-                { orderDetails ->
-                    orderDetails.let {
-                        for(o in orderDetails) {
-                            var detail = OrderDetail(productId = o.productId, quantity = o.quantity)
-                            detail.img = o.img
-                            detail.productName = o.productName
-                            detail.unitPrice = o.unitPrice
-                            list.add(detail)
-                        }
-                        shoppingListAdapter = ShoppingListAdapter(mainActivity, list, this@ShoppingListFragment)
+                viewLifecycleOwner
+            ) { orderDetails ->
+                orderDetails.let {
+                    for (orderDetail in orderDetails) {
+                        var detail = OrderDetail(productId = orderDetail.productId, quantity = orderDetail.quantity)
+                        detail.img = orderDetail.img
+                        detail.productName = orderDetail.productName
+                        detail.unitPrice = orderDetail.unitPrice
+                        list.add(detail)
                     }
-
-                    shoppingListRecyclerView.apply {
-                        val linearLayoutManager = LinearLayoutManager(context)
-                        linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
-                        layoutManager = linearLayoutManager
-                        adapter = shoppingListAdapter
-                        //원래의 목록위치로 돌아오게함
-                        adapter!!.stateRestorationPolicy =
-                            RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
-                    }
-
-                    moneyAndCountRefresh(list)
+                    shoppingListAdapter =
+                        ShoppingListAdapter(mainActivity, list, this@ShoppingListFragment)
                 }
-            )
+
+                shoppingListRecyclerView.apply {
+                    val linearLayoutManager = LinearLayoutManager(context)
+                    linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
+                    layoutManager = linearLayoutManager
+                    adapter = shoppingListAdapter
+                    //원래의 목록위치로 돌아오게함
+                    adapter!!.stateRestorationPolicy =
+                        RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
+                }
+
+                moneyAndCountRefresh(list)
+            }
         }
         moneyAndCountRefresh(list)
 

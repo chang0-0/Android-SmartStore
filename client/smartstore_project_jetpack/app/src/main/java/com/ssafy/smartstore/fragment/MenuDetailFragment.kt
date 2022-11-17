@@ -78,7 +78,6 @@ class MenuDetailFragment : Fragment(){
         binding.recyclerViewMenuDetail.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             adapter = commentAdapter
-            Log.d(TAG, "initData: adapter 설정")
             //원래의 목록위치로 돌아오게함
             adapter!!.stateRestorationPolicy =
                 RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
