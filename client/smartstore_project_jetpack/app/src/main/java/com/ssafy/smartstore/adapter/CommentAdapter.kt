@@ -15,10 +15,13 @@ import com.ssafy.smartstore.fragment.MenuDetailFragment
 import com.ssafy.smartstore.response.MenuDetailWithCommentResponse
 import com.ssafy.smartstore.service.CommentService
 import com.ssafy.smartstore.util.RetrofitCallback
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 private const val TAG = "CommentAdapter_싸피"
-class CommentAdapter(val list: List<MenuDetailWithCommentResponse>, val productId: Int, val fragment: MenuDetailFragment) :RecyclerView.Adapter<CommentAdapter.CommentHolder>(){
-
+class CommentAdapter(val productId: Int, val fragment: MenuDetailFragment) :RecyclerView.Adapter<CommentAdapter.CommentHolder>(){
+    var list: List<MenuDetailWithCommentResponse> = emptyList()
     inner class CommentHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         val commentTv = itemView.findViewById<TextView>(R.id.textNoticeContent)
         val commentEdt = itemView.findViewById<EditText>(R.id.et_comment_content)
@@ -53,13 +56,17 @@ class CommentAdapter(val list: List<MenuDetailWithCommentResponse>, val productI
 
                 commentDeleteBtn.setOnClickListener {
                     delete(data.commentId)
-                    fragment.initData()
+                    Log.d(TAG, "bindInfo: delete 눌렀")
+//                    fragment.initData()
                 }
 
                 commentAcceptBtn.setOnClickListener {
                     val updateComment = Comment(data.commentId, data.userId.toString(), productId, data.productRating.toFloat(), commentEdt.text.toString())
-                    update(updateComment)
-                    fragment.initData()
+                    CoroutineScope(Dispatchers.IO).launch { update(updateComment) }
+
+
+                    Log.d(TAG, "bindInfo: update 눌렀")
+//                    fragment.initData()
 
                     commentAcceptBtn.visibility = View.GONE
                     commentCancelBtn.visibility = View.GONE
@@ -105,7 +112,7 @@ class CommentAdapter(val list: List<MenuDetailWithCommentResponse>, val productI
 
     private fun update(comment: Comment) {
         CommentService().update(comment, UpdateCallback())
-
+        fragment.refreshCommentList()
     }
 
     inner class UpdateCallback: RetrofitCallback<Boolean> {
@@ -128,7 +135,7 @@ class CommentAdapter(val list: List<MenuDetailWithCommentResponse>, val productI
 
     private fun delete(commentId: Int) {
         CommentService().delete(commentId, DeleteCallback())
-
+        fragment.refreshCommentList()
     }
 
     inner class DeleteCallback: RetrofitCallback<Boolean> {

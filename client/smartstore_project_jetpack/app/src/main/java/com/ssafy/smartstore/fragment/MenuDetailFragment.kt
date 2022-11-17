@@ -1,5 +1,6 @@
 package com.ssafy.smartstore.fragment
 
+import kotlinx.coroutines.*
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
@@ -11,7 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RatingBar
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -24,20 +25,20 @@ import com.ssafy.smartstore.dto.Comment
 import com.ssafy.smartstore.dto.OrderDetail
 import com.ssafy.smartstore.response.MenuDetailWithCommentResponse
 import com.ssafy.smartstore.service.CommentService
-import com.ssafy.smartstore.service.ProductService
 import com.ssafy.smartstore.util.CommonUtils
 import com.ssafy.smartstore.util.RetrofitCallback
 import com.ssafy.smartstore.util.showToastMessage
 import com.ssafy.smartstore.viewModels.MainViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlin.math.round
 
 //메뉴 상세 화면 . Order탭 - 특정 메뉴 선택시 열림
 private const val TAG = "MenuDetailFragment_싸피"
 class MenuDetailFragment : Fragment(){
-    private val activityWithFragmentViewModel: MainViewModel by activityViewModels()
+    private lateinit var viewModel: MainViewModel
     private lateinit var mainActivity: MainActivity
     private var productId = -1
-    private var commentAdapter = CommentAdapter(emptyList(), productId, this)
+    lateinit var commentAdapter : CommentAdapter
     lateinit var menuDetailWithCommentResponse : MenuDetailWithCommentResponse
 
     private lateinit var binding:FragmentMenuDetailBinding
@@ -68,20 +69,33 @@ class MenuDetailFragment : Fragment(){
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initData()
+        Log.d(TAG, "onViewCreated: 생성?")
+        viewModel = ViewModelProvider(mainActivity).get(MainViewModel::class.java)
+        Log.d(TAG, "onViewCreated: 생성!")
+        refreshCommentList()
+        initAdapter()
         initListener()
+
+
     }
 
-    fun initData(){
-        ProductService().getProductWithComments(productId, ProductWithCommentInsertCallback())
-
+    // comment adapter 초기화
+    private fun initAdapter() {
+        commentAdapter = CommentAdapter(productId, this)
+        viewModel._productInfo.observe(mainActivity) {
+            commentAdapter.list = it
+            commentAdapter.notifyDataSetChanged()
+        }
         binding.recyclerViewMenuDetail.apply {
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             adapter = commentAdapter
-            //원래의 목록위치로 돌아오게함
-            adapter!!.stateRestorationPolicy =
-                RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
-            adapter!!.notifyDataSetChanged()
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        }
+    }
+
+    fun refreshCommentList() {
+        CoroutineScope(Dispatchers.IO).launch {
+            delay(100)  // 데이터 갱신 후 화면 표시를 위한 delay
+            viewModel.getProductInfo(productId, ProductWithCommentInsertCallback())
         }
     }
 
@@ -161,10 +175,10 @@ class MenuDetailFragment : Fragment(){
                 userId = ApplicationClass.sharedPreferencesUtil.getUser().id, rating = binding.ratingBar.rating)
             insert(comment)
 
+
             // 댓글 창 초기화
             binding.commentEdt.setText("")
 
-            initData()
         }
         builder.setPositiveButton("확인", listener)
         builder.show()
@@ -187,20 +201,10 @@ class MenuDetailFragment : Fragment(){
         ) {
             if(responseData.isNotEmpty()) {
                 Log.d(TAG, "initData: ${responseData}")
-
-                // comment 가 없을 경우 -> 들어온 response가 1개이고 해당 userId 가 null일 경우 빈 배열 Adapter 연결
-                commentAdapter = if (responseData.size == 1 && responseData[0].userId == null) {
-                    CommentAdapter(emptyList(), productId, this@MenuDetailFragment)
-                } else {
-                    CommentAdapter(responseData, productId, this@MenuDetailFragment)
-                }
-
                 // 화면 정보 갱신
                 setScreen(responseData[0])
-
                 menuDetailWithCommentResponse = responseData[0]
             }
-
         }
 
         override fun onError(t: Throwable) {
@@ -215,6 +219,7 @@ class MenuDetailFragment : Fragment(){
     // 댓글 등록 서비스 호출
     private fun insert(comment: Comment) {
         CommentService().insert(comment, InsertCallback())
+        refreshCommentList()
     }
 
     inner class InsertCallback: RetrofitCallback<Boolean> {
