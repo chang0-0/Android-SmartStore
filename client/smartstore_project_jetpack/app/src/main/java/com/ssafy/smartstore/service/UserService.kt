@@ -1,6 +1,5 @@
 package com.ssafy.smartstore.service
 
-import android.util.Log
 import com.ssafy.smartstore.dto.User
 import com.ssafy.smartstore.util.RetrofitCallback
 import com.ssafy.smartstore.util.RetrofitUtil
@@ -11,7 +10,6 @@ import retrofit2.Response
 private const val TAG = "LoginService_싸피"
 
 class UserService {
-
     fun login(user: User, callback: RetrofitCallback<User>) {
         RetrofitUtil.userService.login(user).enqueue(object : Callback<User> {
             override fun onResponse(call: Call<User>, response: Response<User>) {
@@ -76,3 +74,4 @@ class UserService {
     }
 
 }
+
