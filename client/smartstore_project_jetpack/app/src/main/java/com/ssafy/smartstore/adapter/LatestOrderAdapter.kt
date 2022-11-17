@@ -15,23 +15,26 @@ import com.ssafy.smartstore.response.LatestOrderResponse
 import com.ssafy.smartstore.util.CommonUtils
 
 private const val TAG = "LatestOrderAdapter_싸피"
-class LatestOrderAdapter(val context: Context, val list:List<LatestOrderResponse>) :RecyclerView.Adapter<LatestOrderAdapter.LatestOrderHolder>(){
 
-    inner class LatestOrderHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
+class LatestOrderAdapter(val context: Context, val list: List<LatestOrderResponse>) :
+    RecyclerView.Adapter<LatestOrderAdapter.LatestOrderHolder>() {
+    private lateinit var adapterItemClickListener: AdapterItemClickListener
+
+    inner class LatestOrderHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val menuImage = itemView.findViewById<ImageView>(R.id.menuImage)
         val textMenuNames = itemView.findViewById<TextView>(R.id.textMenuNames)
         val textMenuPrice = itemView.findViewById<TextView>(R.id.textMenuPrice)
         val textMenuDate = itemView.findViewById<TextView>(R.id.textMenuDate)
 
-        fun bindInfo(data: LatestOrderResponse){
+        fun bindInfo(data: LatestOrderResponse) {
             Log.d(TAG, "bindInfo: data: ${data}")
             Glide.with(itemView)
                 .load("${ApplicationClass.MENU_IMGS_URL}${data.img}")
                 .into(menuImage)
 
-            if(data.orderCnt > 1){
-                textMenuNames.text = "${data.productName} 외 ${data.orderCnt -1}건"  //외 x건
-            }else{
+            if (data.orderCnt > 1) {
+                textMenuNames.text = "${data.productName} 외 ${data.orderCnt - 1}건"  //외 x건
+            } else {
                 textMenuNames.text = data.productName
             }
 
@@ -39,14 +42,16 @@ class LatestOrderAdapter(val context: Context, val list:List<LatestOrderResponse
             textMenuDate.text = CommonUtils.getFormattedString(data.orderDate)
 
             //클릭연결
-            itemView.setOnClickListener{
-                itemClickListner.onClick(it, layoutPosition, data.orderId)
+            itemView.setOnClickListener {
+                adapterItemClickListener.onClick(it, layoutPosition, data.orderId)
             }
+
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LatestOrderHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.list_item_latest_order, parent, false)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.list_item_latest_order, parent, false)
         return LatestOrderHolder(view)
     }
 
@@ -58,16 +63,8 @@ class LatestOrderAdapter(val context: Context, val list:List<LatestOrderResponse
         return list.size
     }
 
-    //클릭 인터페이스 정의 사용하는 곳에서 만들어준다.
-    interface ItemClickListener {
-        fun onClick(view: View,  position: Int, orderid:Int)
+    // 메소드 구현.
+    fun setItemClickListener(adapterItemClickListener: AdapterItemClickListener) {
+        this.adapterItemClickListener = adapterItemClickListener
     }
-    //클릭리스너 선언
-    private lateinit var itemClickListner: ItemClickListener
-    //클릭리스너 등록 매소드
-    fun setItemClickListener(itemClickListener: ItemClickListener) {
-        this.itemClickListner = itemClickListener
-    }
-
 }
-

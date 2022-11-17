@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ssafy.smartstore.activity.MainActivity
+import com.ssafy.smartstore.adapter.AdapterItemClickListener
 import com.ssafy.smartstore.adapter.LatestOrderAdapter
 import com.ssafy.smartstore.adapter.NoticeAdapter
 import com.ssafy.smartstore.adapter.OrderAdapter
@@ -20,12 +21,13 @@ import com.ssafy.smartstore.service.OrderService
 
 // Home 탭
 private const val TAG = "HomeFragment_싸피"
-class HomeFragment : Fragment(){
-    private lateinit var latestOrderAdapter : LatestOrderAdapter
+
+class HomeFragment : Fragment() {
+    private lateinit var latestOrderAdapter: LatestOrderAdapter
     private var noticeAdapter: NoticeAdapter = NoticeAdapter()
     private lateinit var mainActivity: MainActivity
     private lateinit var list: List<LatestOrderResponse>
-    private lateinit var binding:FragmentHomeBinding
+    private lateinit var binding: FragmentHomeBinding
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mainActivity = context as MainActivity
@@ -61,10 +63,12 @@ class HomeFragment : Fragment(){
                 adapter!!.stateRestorationPolicy =
                     RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
             }
-            latestOrderAdapter.setItemClickListener(object : LatestOrderAdapter.ItemClickListener{
-                override fun onClick(view: View, position: Int, orderId: Int) {
-//                    mainActivity!!.openFragment(1)
-                    mainActivity.openFragment(1, "orderId", orderId)
+
+            // latestOrderAdapter 기능 구현.
+            latestOrderAdapter.setItemClickListener(object : AdapterItemClickListener {
+                // interface 메소드 구현
+                override fun onClick(view: View, position: Int, orderId: Any?) {
+                    mainActivity.openFragment(1, "orderId", orderId as Int)
                 }
             })
         }
@@ -79,12 +83,9 @@ class HomeFragment : Fragment(){
             adapter!!.stateRestorationPolicy =
                 RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
         }
-
-
-
     }
 
-    private fun initUserName(){
+    private fun initUserName() {
         var user = ApplicationClass.sharedPreferencesUtil.getUser()
         binding.textUserName.text = "${user.name} 님"
     }

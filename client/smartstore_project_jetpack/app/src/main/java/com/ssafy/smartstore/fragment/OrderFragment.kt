@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ssafy.smartstore.activity.MainActivity
+import com.ssafy.smartstore.adapter.AdapterItemClickListener
 import com.ssafy.smartstore.adapter.MenuAdapter
 import com.ssafy.smartstore.databinding.FragmentOrderBinding
 import com.ssafy.smartstore.dto.Product
@@ -23,7 +24,6 @@ private const val TAG = "OrderFragment_싸피"
 class OrderFragment : Fragment() {
     private lateinit var menuAdapter: MenuAdapter
     private lateinit var mainActivity: MainActivity
-    private lateinit var prodList: List<Product>
     private lateinit var binding: FragmentOrderBinding
 
     override fun onAttach(context: Context) {
@@ -56,9 +56,7 @@ class OrderFragment : Fragment() {
     }
 
     private fun initData() {
-
         ProductService().getProductList(ProductCallback())
-
     }
 
     inner class ProductCallback : RetrofitCallback<List<Product>> {
@@ -66,9 +64,9 @@ class OrderFragment : Fragment() {
             productList.let {
                 Log.d(TAG, "onSuccess: ${productList}")
                 menuAdapter = MenuAdapter(productList)
-                menuAdapter.setItemClickListener(object : MenuAdapter.ItemClickListener {
-                    override fun onClick(view: View, position: Int, productId: Int) {
-                        mainActivity.openFragment(3, "productId", productId)
+                menuAdapter.setItemClickListener(object : AdapterItemClickListener {
+                    override fun onClick(view: View, position: Int, productId: Any?) {
+                        mainActivity.openFragment(3, "productId", productId as Int)
                     }
                 })
             }

@@ -155,7 +155,6 @@ class ShoppingListFragment(val orderId : Int) : Fragment() {
         mainActivity.hideBottomNav(false)
     }
 
-
     fun moneyAndCountRefresh(list: MutableList<OrderDetail>) {
         var count = 0
         var money = 0
@@ -173,6 +172,8 @@ class ShoppingListFragment(val orderId : Int) : Fragment() {
         builder.setMessage(
             "Table NFC를 찍어주세요.\n"
         )
+
+        completedOrder()
 
         requireContext().showToastMessage(activityViewModel.tableId)
 

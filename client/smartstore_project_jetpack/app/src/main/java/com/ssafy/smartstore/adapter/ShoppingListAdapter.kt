@@ -32,7 +32,6 @@ class ShoppingListAdapter(
         val menuImage = itemView.findViewById<ImageView>(R.id.menuImage)
         val cancelBtn = itemView.findViewById<ImageView>(R.id.cancel)
 
-
         fun bindInfo(orderDetail: OrderDetail) {
             Glide.with(itemView)
                 .load("${ApplicationClass.MENU_IMGS_URL}${orderDetail.img}")

@@ -1,3 +1,4 @@
+
 package com.ssafy.smartstore.adapter
 
 import android.content.Context
@@ -15,6 +16,7 @@ import com.ssafy.smartstore.dto.Product
 
 private const val TAG = "MenuAdapter_싸피"
 class MenuAdapter(var productList:List<Product>) :RecyclerView.Adapter<MenuAdapter.MenuHolder>(){
+    private lateinit var adapterItemClickListener: AdapterItemClickListener //클릭리스너 선언
 
     inner class MenuHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         val menuName = itemView.findViewById<TextView>(R.id.textMenuNames)
@@ -27,7 +29,7 @@ class MenuAdapter(var productList:List<Product>) :RecyclerView.Adapter<MenuAdapt
                 .into(menuImage)
 
             itemView.setOnClickListener{
-                itemClickListner.onClick(it, layoutPosition, productList[layoutPosition].id)
+                adapterItemClickListener.onClick(it, layoutPosition, productList[layoutPosition].id)
             }
         }
     }
@@ -46,16 +48,10 @@ class MenuAdapter(var productList:List<Product>) :RecyclerView.Adapter<MenuAdapt
     override fun getItemCount(): Int {
         return productList.size
     }
-
-    //클릭 인터페이스 정의 사용하는 곳에서 만들어준다.
-    interface ItemClickListener {
-        fun onClick(view: View,  position: Int, productId:Int)
-    }
-    //클릭리스너 선언
-    private lateinit var itemClickListner: ItemClickListener
+    
     //클릭리스너 등록 매소드
-    fun setItemClickListener(itemClickListener: ItemClickListener) {
-        this.itemClickListner = itemClickListener
+    fun setItemClickListener(adapterItemClickListener: AdapterItemClickListener) {
+        this.adapterItemClickListener = adapterItemClickListener
     }
 }
 
