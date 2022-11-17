@@ -5,7 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.ssafy.smartstore.R
 import com.ssafy.smartstore.config.ApplicationClass
 import com.ssafy.smartstore.databinding.ListItemMenuBinding
 import com.ssafy.smartstore.dto.Product

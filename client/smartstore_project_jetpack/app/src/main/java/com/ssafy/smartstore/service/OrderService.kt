@@ -1,10 +1,9 @@
 package com.ssafy.smartstore.service
 
-import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.ssafy.smartstore.dto.*
+import com.ssafy.smartstore.dto.Order
 import com.ssafy.smartstore.response.LatestOrderResponse
 import com.ssafy.smartstore.response.OrderDetailResponse
 import com.ssafy.smartstore.util.RetrofitCallback

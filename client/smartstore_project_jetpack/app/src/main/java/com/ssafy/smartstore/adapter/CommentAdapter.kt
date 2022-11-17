@@ -2,26 +2,19 @@ package com.ssafy.smartstore.adapter
 
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
-import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.ssafy.smartstore.R
-import com.ssafy.smartstore.config.ApplicationClass
 import com.ssafy.smartstore.config.ApplicationClass.Companion.sharedPreferencesUtil
 import com.ssafy.smartstore.dto.Comment
-import com.ssafy.smartstore.dto.User
 import com.ssafy.smartstore.fragment.MenuDetailFragment
 import com.ssafy.smartstore.response.MenuDetailWithCommentResponse
 import com.ssafy.smartstore.service.CommentService
-import com.ssafy.smartstore.service.UserService
 import com.ssafy.smartstore.util.RetrofitCallback
-import com.ssafy.smartstore.util.RetrofitUtil.Companion.commentService
 
 private const val TAG = "CommentAdapter_싸피"
 class CommentAdapter(val list: List<MenuDetailWithCommentResponse>, val productId: Int, val fragment: MenuDetailFragment) :RecyclerView.Adapter<CommentAdapter.CommentHolder>(){
