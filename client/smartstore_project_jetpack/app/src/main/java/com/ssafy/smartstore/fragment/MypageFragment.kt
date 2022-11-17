@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ssafy.smartstore.activity.MainActivity
+import com.ssafy.smartstore.adapter.AdapterItemClickListener
 import com.ssafy.smartstore.adapter.OrderAdapter
 import com.ssafy.smartstore.config.ApplicationClass
 import com.ssafy.smartstore.databinding.FragmentMypageBinding
@@ -53,9 +54,9 @@ class MypageFragment : Fragment() {
         userLastOrderLiveData.observe(viewLifecycleOwner) {
             list = it
             orderAdapter = OrderAdapter(mainActivity, list)
-            orderAdapter.setItemClickListener(object : OrderAdapter.ItemClickListener {
-                override fun onClick(view: View, position: Int, orderid: Int) {
-                    mainActivity.openFragment(2, "orderId", orderid)
+            orderAdapter.setItemClickListener(object : AdapterItemClickListener {
+                override fun onClick(view: View, position: Int, orderid: Any?) {
+                    mainActivity.openFragment(2, "orderId", orderid as Int)
                 }
             })
 
