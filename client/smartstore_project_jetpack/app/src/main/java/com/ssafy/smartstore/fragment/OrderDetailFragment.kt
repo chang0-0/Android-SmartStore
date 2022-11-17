@@ -2,20 +2,15 @@ package com.ssafy.smartstore.fragment
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ssafy.smartstore.activity.MainActivity
 import com.ssafy.smartstore.adapter.OrderDetailListAdapter
-import com.ssafy.smartstore.config.ApplicationClass
 import com.ssafy.smartstore.databinding.FragmentOrderDetailBinding
-import com.ssafy.smartstore.dto.Order
-import com.ssafy.smartstore.dto.OrderDetail
 import com.ssafy.smartstore.response.OrderDetailResponse
 import com.ssafy.smartstore.service.OrderService
 import com.ssafy.smartstore.util.CommonUtils
@@ -57,7 +52,6 @@ class OrderDetailFragment : Fragment(){
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         initData()
     }
 
@@ -79,10 +73,7 @@ class OrderDetailFragment : Fragment(){
                     adapter!!.stateRestorationPolicy =
                         RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
                 }
-
                 setOrderDetailScreen(orderDetails)
-
-                Log.d(TAG, "onViewCreated: $orderDetails")
             }
         )
     }
@@ -98,7 +89,6 @@ class OrderDetailFragment : Fragment(){
         orderDetails.forEach { totalPrice += it.totalPrice }
         binding.tvTotalPrice.text = "$totalPrice 원"
     }
-
 
     override fun onDestroy() {
         super.onDestroy()

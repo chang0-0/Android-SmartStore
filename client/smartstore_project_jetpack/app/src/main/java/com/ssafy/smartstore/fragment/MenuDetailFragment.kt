@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RatingBar
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -28,11 +27,8 @@ import com.ssafy.smartstore.service.CommentService
 import com.ssafy.smartstore.service.ProductService
 import com.ssafy.smartstore.util.CommonUtils
 import com.ssafy.smartstore.util.RetrofitCallback
+import com.ssafy.smartstore.util.showToastMessage
 import com.ssafy.smartstore.viewModels.MainViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlin.math.round
 
 //메뉴 상세 화면 . Order탭 - 특정 메뉴 선택시 열림
@@ -75,13 +71,8 @@ class MenuDetailFragment : Fragment(){
         initData()
         initListener()
     }
-    //MutableLiveData<List<MenuDetailWithCommentResponse>>
-    fun initData(){
-        CoroutineScope(Dispatchers.Main).launch {
-            Log.d(TAG, "okhttp: 기다리는 중..")
-            delay(500)
-        }
 
+    fun initData(){
         ProductService().getProductWithComments(productId, ProductWithCommentInsertCallback())
 
         binding.recyclerViewMenuDetail.apply {
@@ -122,25 +113,26 @@ class MenuDetailFragment : Fragment(){
         // 개수 감소
         binding.btnMinusCount.setOnClickListener {
             if(binding.textMenuCount.text == "1") {
-
+                // 표시된 개수가 1이므로 더 이상 뺄 수 없음
             } else {
                 binding.textMenuCount.text = (binding.textMenuCount.text.toString().toInt() - 1).toString()
             }
         }
 
         binding.btnAddList.setOnClickListener {
-            Toast.makeText(context,"상품이 장바구니에 담겼습니다.",Toast.LENGTH_SHORT).show()
+            requireContext().showToastMessage("상품이 장바구니에 담겼습니다.")
             val orderDetail = OrderDetail(productId, binding.textMenuCount.text.toString().toInt())
-            orderDetail.productName = menuDetailWithCommentResponse.productName
-            orderDetail.unitPrice = menuDetailWithCommentResponse.productPrice
-            orderDetail.img = menuDetailWithCommentResponse.productImg
-            orderDetail.productType = menuDetailWithCommentResponse.type
+            orderDetail.apply {
+                productName = menuDetailWithCommentResponse.productName
+                unitPrice = menuDetailWithCommentResponse.productPrice
+                img = menuDetailWithCommentResponse.productImg
+                productType = menuDetailWithCommentResponse.type
+            }
 
-            mainActivity.shoppingList.add(orderDetail)
+            mainActivity.shoppingList.add(orderDetail)  // 장바구니에 상품 추가
             mainActivity.supportFragmentManager.beginTransaction()
                 .replace(R.id.frame_layout_main, OrderFragment())
                 .commit()
-
         }
 
         // comment 등록
@@ -160,14 +152,17 @@ class MenuDetailFragment : Fragment(){
         val v = layoutInflater.inflate(R.layout.dialog_ratingbar,null)
         builder.setView(v)
 
-        val listener = DialogInterface.OnClickListener { p0, p1 ->
+        val listener = DialogInterface.OnClickListener { p0, _ ->
             val alert = p0 as AlertDialog
             val dialogRatingBar : RatingBar = alert.findViewById(R.id.ratingBar)
 
             binding.ratingBar.rating = dialogRatingBar.rating
 
-            val comment = Comment(comment = binding.commentEdt.text.toString(), productId = productId, userId = ApplicationClass.sharedPreferencesUtil.getUser().id, rating = binding.ratingBar.rating)
+            val comment = Comment(comment = binding.commentEdt.text.toString(), productId = productId,
+                userId = ApplicationClass.sharedPreferencesUtil.getUser().id, rating = binding.ratingBar.rating)
             insert(comment)
+
+            // 댓글 창 초기화
             binding.commentEdt.setText("")
 
             initData()
@@ -175,7 +170,6 @@ class MenuDetailFragment : Fragment(){
         builder.setPositiveButton("확인", listener)
         builder.show()
     }
-
 
     companion object {
         @JvmStatic
@@ -186,7 +180,6 @@ class MenuDetailFragment : Fragment(){
                 }
             }
     }
-
 
     inner class ProductWithCommentInsertCallback: RetrofitCallback<List<MenuDetailWithCommentResponse>> {
         override fun onSuccess(
@@ -220,15 +213,14 @@ class MenuDetailFragment : Fragment(){
         }
     }
 
-
+    // 댓글 등록 서비스 호출
     private fun insert(comment: Comment) {
         CommentService().insert(comment, InsertCallback())
-
     }
 
     inner class InsertCallback: RetrofitCallback<Boolean> {
         override fun onSuccess( code: Int, bool: Boolean) {
-            if (bool != null) {
+            if (bool) {
                 Log.d(TAG, "onSuccess: insert 성공")
             }else{
                 Log.d(TAG, "onSuccess: insert 실패")

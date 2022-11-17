@@ -14,10 +14,8 @@ import com.ssafy.smartstore.adapter.OrderAdapter
 import com.ssafy.smartstore.config.ApplicationClass
 import com.ssafy.smartstore.databinding.FragmentMypageBinding
 import com.ssafy.smartstore.dto.User
-import com.ssafy.smartstore.dto.UserOrderDetail
 import com.ssafy.smartstore.response.LatestOrderResponse
 import com.ssafy.smartstore.service.OrderService
-import com.ssafy.smartstore.service.UserService
 
 // MyPage 탭
 private const val TAG = "MypageFragment_싸피"
@@ -52,10 +50,8 @@ class MypageFragment : Fragment() {
 
     private fun initData(id: String) {
         val userLastOrderLiveData = OrderService().getLastMonthOrder(id)
-        Log.d(TAG, "onViewCreated: ${userLastOrderLiveData.value}")
         userLastOrderLiveData.observe(viewLifecycleOwner) {
             list = it
-
             orderAdapter = OrderAdapter(mainActivity, list)
             orderAdapter.setItemClickListener(object : OrderAdapter.ItemClickListener {
                 override fun onClick(view: View, position: Int, orderid: Int) {
@@ -78,7 +74,7 @@ class MypageFragment : Fragment() {
         }
     }
 
-
+    // user id get & stamp 정보 화면에 표시
     private fun getUserData(): String {
         user = ApplicationClass.sharedPreferencesUtil.getUser()
         binding.textUserName.text = user.name

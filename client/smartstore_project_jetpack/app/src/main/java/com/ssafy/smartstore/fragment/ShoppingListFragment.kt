@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -17,12 +16,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ssafy.smartstore.R
 import com.ssafy.smartstore.activity.MainActivity
-import com.ssafy.smartstore.adapter.OrderDetailListAdapter
 import com.ssafy.smartstore.adapter.ShoppingListAdapter
 import com.ssafy.smartstore.config.ApplicationClass
 import com.ssafy.smartstore.dto.Order
 import com.ssafy.smartstore.dto.OrderDetail
-import com.ssafy.smartstore.response.OrderDetailResponse
 import com.ssafy.smartstore.service.OrderService
 import com.ssafy.smartstore.util.RetrofitCallback
 import com.ssafy.smartstore.util.showToastMessage
@@ -40,7 +37,6 @@ class ShoppingListFragment(val orderId : Int) : Fragment() {
     private lateinit var btnOrder: Button
     private lateinit var txtShoppingCount: TextView
     private lateinit var txtShoppingMoney: TextView
-    var tableNumber = 0
     var list = mutableListOf<OrderDetail>()
 
     private val activityViewModel by activityViewModels<MainViewModel>()
@@ -120,9 +116,7 @@ class ShoppingListFragment(val orderId : Int) : Fragment() {
                 }
             )
         }
-
         moneyAndCountRefresh(list)
-
 
         btnShop.setOnClickListener {
             btnShop.background =
@@ -139,13 +133,12 @@ class ShoppingListFragment(val orderId : Int) : Fragment() {
             isShop = false
         }
         btnOrder.setOnClickListener {
-            if (isShop) {
+            if (isShop) {   // 거리가 200 이하라면
                 showDialogForOrderInShop()
 
-
             } else {
-                //거리가 200이상이라면
-                if (true) showDialogForOrderTakeoutOver200m()
+                // 거리가 200 이상이라면
+                showDialogForOrderTakeoutOver200m()
             }
         }
     }
@@ -155,6 +148,7 @@ class ShoppingListFragment(val orderId : Int) : Fragment() {
         mainActivity.hideBottomNav(false)
     }
 
+    // 화면 하단에 장바구니에 담긴 상품의 총액, 개수 표시
     fun moneyAndCountRefresh(list: MutableList<OrderDetail>) {
         var count = 0
         var money = 0
@@ -164,7 +158,8 @@ class ShoppingListFragment(val orderId : Int) : Fragment() {
         }
         txtShoppingCount.text = "총 ${count}개"
         txtShoppingMoney.text = "${money}원"
-    }
+    }   // End of moneyAndCountRefresh
+
 
     private fun showDialogForOrderInShop() {
         val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
@@ -174,7 +169,6 @@ class ShoppingListFragment(val orderId : Int) : Fragment() {
         )
 
         completedOrder()
-
         requireContext().showToastMessage(activityViewModel.tableId)
 
         if (activityViewModel.tableId != "") {
@@ -186,12 +180,10 @@ class ShoppingListFragment(val orderId : Int) : Fragment() {
             "취소"
         ) { dialog, _ ->
             dialog.cancel()
-
         }
-        dialog = builder.create()
 
+        dialog = builder.create()
         dialog.show()
-//        builder.create().show()
     }
 
     lateinit var dialog: AlertDialog
@@ -209,13 +201,12 @@ class ShoppingListFragment(val orderId : Int) : Fragment() {
             "취소"
         ) { dialog, _ -> dialog.cancel() }
         dialog = builder.create()
-//        builder.create().show()
         dialog.show()
     }
 
+    // order를 생성해 service 호출
     private fun completedOrder() {
-        val order = Order()
-        order.apply {
+        val order = Order().apply {
             userId = ApplicationClass.sharedPreferencesUtil.getUser().id
             orderTable = "${activityViewModel.tableId}번 테이블"
             for (detail in list) {
@@ -223,10 +214,10 @@ class ShoppingListFragment(val orderId : Int) : Fragment() {
             }
         }
 
-        Log.d(TAG, "completedOrder: order: ${order}")
         makeOrder(order)
+        requireContext().showToastMessage("주문이 완료되었습니다.");
 
-        Toast.makeText(context, "주문이 완료되었습니다.", Toast.LENGTH_SHORT).show()
+        // 장바구니 초기화 -> 추후 livedata로 바뀔 시 수정 필요
         mainActivity.shoppingList = mutableListOf()
 
         mainActivity.supportFragmentManager.beginTransaction()
@@ -255,6 +246,4 @@ class ShoppingListFragment(val orderId : Int) : Fragment() {
             Log.d(TAG, "onResponse: Error Code $code")
         }
     }
-
-
 }
