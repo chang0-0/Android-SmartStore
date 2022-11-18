@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ssafy.smartstore.activity.MainActivity
@@ -17,6 +18,7 @@ import com.ssafy.smartstore.databinding.FragmentMypageBinding
 import com.ssafy.smartstore.dto.User
 import com.ssafy.smartstore.response.LatestOrderResponse
 import com.ssafy.smartstore.service.OrderService
+import com.ssafy.smartstore.viewModels.UserViewModel
 
 // MyPage 탭
 private const val TAG = "MypageFragment_싸피"
@@ -26,6 +28,7 @@ class MypageFragment : Fragment() {
     private lateinit var mainActivity: MainActivity
     private lateinit var list: List<LatestOrderResponse>
     private lateinit var user: User
+    private val userViewModel: UserViewModel by activityViewModels()
 
     private lateinit var binding: FragmentMypageBinding
     override fun onAttach(context: Context) {
@@ -79,6 +82,20 @@ class MypageFragment : Fragment() {
     private fun getUserData(): String {
         user = ApplicationClass.sharedPreferencesUtil.getUser()
         binding.textUserName.text = user.name
+
+        userViewModel.getUserInfo(user.id)
+
+        // 데이터가 변하면 화면을 자동으로 갱신
+        userViewModel.userInfo.observe(viewLifecycleOwner) {
+            Log.d(TAG, " @@@@@@@@@@@ userViewModel 옵저버 동작 @@@@@@@@@@@@@@@: ")
+
+            binding.textUserName.text = it.name
+            var stampDetail = stampLevelCalc(it.stamps)
+            binding.textUserLevel.text = "${stampDetail.levelName} ${stampDetail.levelDetail}단계"
+            binding.textLevelRest.text = "다음 레벨까지 ${stampDetail.levelRest}잔 남았습니다."
+            binding.proBarUserLevel.setProgress(stampDetail.levelProgressRatio) // 백분율
+            binding.textUserNextLevel.text = stampDetail.nextLevelCountText
+        }
 
         var stampDetail = stampLevelCalc(user.stamps)
         binding.textUserLevel.text = "${stampDetail.levelName} ${stampDetail.levelDetail}단계"

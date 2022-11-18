@@ -40,7 +40,6 @@ class ApplicationClass : Application() {
         // userRepository 실행. (싱글톤)
         UserRepository.initialize(this)
 
-
         //shared preference 초기화
         sharedPreferencesUtil = SharedPreferencesUtil(applicationContext)
 

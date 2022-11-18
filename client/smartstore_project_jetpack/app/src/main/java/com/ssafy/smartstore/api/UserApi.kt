@@ -2,6 +2,7 @@ package com.ssafy.smartstore.api
 
 import com.ssafy.smartstore.dto.User
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.*
 
 interface UserApi {
@@ -10,8 +11,8 @@ interface UserApi {
     fun insert(@Body body: User): Call<Boolean>
 
     // 사용자의 정보와 함께 사용자의 주문 내역, 사용자 등급 정보를 반환한다.
-    @POST("rest/user/info")
-    fun getInfo(@Query("id") id: String): Call<HashMap<String, Any>>
+    @GET("rest/user/info")
+    fun getInfo(@Query("id") id: String): Response<User>
 
     // request parameter로 전달된 id가 이미 사용중인지 반환한다.
     @GET("rest/user/isUsed")

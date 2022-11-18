@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var filters: Array<IntentFilter>
     private lateinit var pIntent: PendingIntent
     private val newActivityViewModel: MainViewModel by viewModels()
-    private val userViewModel : UserViewModel by viewModels()
+    private val userViewModel: UserViewModel by viewModels()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -232,14 +232,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun userDataSet() {
         val user = SharedPreferencesUtil(this).getUser()
-        Log.d(TAG, "@@@@@@@@@@@@@@@@@  userDataSet: $user ")
 
         // user 정보 viewModel에 저장해서 LiveData로 관리
-       //val userViewModel = UserViewModel(this.UserViewModelFactory).get(main)
-
-
-
-
+        //val userViewModel = UserViewModel(this.UserViewModelFactory).get(main)
 
 
     }
