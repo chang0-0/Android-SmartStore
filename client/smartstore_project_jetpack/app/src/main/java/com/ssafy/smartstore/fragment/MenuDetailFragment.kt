@@ -1,6 +1,5 @@
 package com.ssafy.smartstore.fragment
 
-import kotlinx.coroutines.*
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
@@ -14,7 +13,6 @@ import android.widget.RatingBar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.ssafy.smartstore.R
 import com.ssafy.smartstore.activity.MainActivity
@@ -24,19 +22,15 @@ import com.ssafy.smartstore.databinding.FragmentMenuDetailBinding
 import com.ssafy.smartstore.dto.Comment
 import com.ssafy.smartstore.dto.OrderDetail
 import com.ssafy.smartstore.response.MenuDetailWithCommentResponse
-import com.ssafy.smartstore.service.CommentService
 import com.ssafy.smartstore.util.CommonUtils
-import com.ssafy.smartstore.util.RetrofitCallback
 import com.ssafy.smartstore.util.showToastMessage
-import com.ssafy.smartstore.viewModels.MainViewModel
-import com.ssafy.smartstore.viewModels.MainViewModel2
-import kotlinx.coroutines.Dispatchers
+import com.ssafy.smartstore.viewModels.CommentViewModel
 import kotlin.math.round
 
 //메뉴 상세 화면 . Order탭 - 특정 메뉴 선택시 열림
 private const val TAG = "MenuDetailFragment_싸피"
 class MenuDetailFragment : Fragment(){
-    private val viewModel by lazy { ViewModelProvider(this, MainViewModel2.Factory(mainActivity.application, productId))[MainViewModel2::class.java]}
+    private val viewModel by lazy { ViewModelProvider(this, CommentViewModel.Factory(mainActivity.application, productId))[CommentViewModel::class.java]}
     private lateinit var mainActivity: MainActivity
     private var productId = -1
     lateinit var commentAdapter : CommentAdapter
@@ -55,7 +49,6 @@ class MenuDetailFragment : Fragment(){
             productId = it.getInt("productId", -1)
             Log.d(TAG, "onCreate: $productId")
         }
-
     }
 
     override fun onCreateView(
@@ -82,17 +75,14 @@ class MenuDetailFragment : Fragment(){
     // comment adapter 초기화
     private fun initAdapter() {
         commentAdapter = CommentAdapter(productId, this)
-//        viewModel._productInfo.observe(mainActivity) {
-//            commentAdapter.list = it
-//            commentAdapter.notifyDataSetChanged()
-//        }
         binding.recyclerViewMenuDetail.apply {
             adapter = commentAdapter
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         }
-        viewModel.productInfo.observe(mainActivity) {
-            viewModel.productInfo.value?.let {
-                commentAdapter.list = it
+        // viewModel 관찰
+        viewModel.commentList.observe(mainActivity) {
+            viewModel.commentList.value?.let {
+                commentAdapter.setData(it)
                 commentAdapter.notifyDataSetChanged()
                 Log.d(TAG, "initAdapter: 리스트: ${it}")
 
@@ -100,14 +90,6 @@ class MenuDetailFragment : Fragment(){
             }
         }
     }
-
-//    // 댓글 리스트 갱신
-//    fun refreshCommentList() {
-//        CoroutineScope(Dispatchers.IO).launch {
-//            delay(50)  // 데이터 갱신 후 화면 표시를 위한 delay
-//            viewModel.getProductInfo(productId, ProductWithCommentInsertCallback())
-//        }
-//    }
 
     // 초기 화면 설정
     @SuppressLint("NotifyDataSetChanged")
@@ -142,10 +124,10 @@ class MenuDetailFragment : Fragment(){
             requireContext().showToastMessage("상품이 장바구니에 담겼습니다.")
             val orderDetail = OrderDetail(productId, binding.textMenuCount.text.toString().toInt())
             orderDetail.apply {
-//                productName = viewModel._productInfo.value?.get(0)!!.productName
-//                unitPrice = viewModel._productInfo.value?.get(0)!!.productPrice
-//                img = viewModel._productInfo.value?.get(0)!!.productImg
-//                productType = viewModel._productInfo.value?.get(0)!!.type
+                productName = viewModel.commentList.value?.get(0)!!.productName
+                unitPrice = viewModel.commentList.value?.get(0)!!.productPrice
+                img = viewModel.commentList.value?.get(0)!!.productImg
+                productType = viewModel.commentList.value?.get(0)!!.type
             }
 
             mainActivity.shoppingList.add(orderDetail)  // 장바구니에 상품 추가
@@ -181,7 +163,6 @@ class MenuDetailFragment : Fragment(){
                 userId = ApplicationClass.sharedPreferencesUtil.getUser().id, rating = binding.ratingBar.rating)
             insert(comment)
 
-
             // 댓글 창 초기화
             binding.commentEdt.setText("")
 
@@ -200,49 +181,16 @@ class MenuDetailFragment : Fragment(){
             }
     }
 
-    inner class ProductWithCommentInsertCallback: RetrofitCallback<List<MenuDetailWithCommentResponse>> {
-        override fun onSuccess(
-            code: Int,
-            responseData: List<MenuDetailWithCommentResponse>
-        ) {
-            if(responseData.isNotEmpty()) {
-                Log.d(TAG, "initData: ${responseData}")
-                // 화면 정보 갱신
-                setScreen(responseData[0])
-            }
-        }
-
-        override fun onError(t: Throwable) {
-            Log.d(TAG, t.message ?: "물품 정보 받아오는 중 통신오류")
-        }
-
-        override fun onFailure(code: Int) {
-            Log.d(TAG, "onResponse: Error Code $code")
-        }
-    }
-
     // 댓글 등록 서비스 호출
     private fun insert(comment: Comment) {
-        CommentService().insert(comment, InsertCallback())
-//        refreshCommentList()
+        viewModel.insertComment(comment)
     }
-
-    inner class InsertCallback: RetrofitCallback<Boolean> {
-        override fun onSuccess( code: Int, bool: Boolean) {
-            if (bool) {
-                Log.d(TAG, "onSuccess: insert 성공")
-            }else{
-                Log.d(TAG, "onSuccess: insert 실패")
-            }
-        }
-
-        override fun onError(t: Throwable) {
-            Log.d(TAG, t.message ?: "comment insert 중 통신오류")
-        }
-
-        override fun onFailure(code: Int) {
-            Log.d(TAG, "onResponse: Error Code $code")
-        }
+    // 댓글 수정 서비스 호출
+    fun update(comment: Comment) {
+        viewModel.updateComment(comment)
     }
-
+    // 댓글 삭제 서비스 호출
+    fun delete(comment: Comment) {
+        viewModel.deleteComment(comment)
+    }
 }

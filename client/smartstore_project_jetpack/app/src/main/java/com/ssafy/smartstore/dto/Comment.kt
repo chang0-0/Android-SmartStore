@@ -5,5 +5,5 @@ data class Comment(
     val userId: String,
     val productId: Int,
     val rating: Float,
-    val comment: String
+    var comment: String
 )

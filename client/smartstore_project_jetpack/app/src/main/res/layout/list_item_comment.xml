@@ -19,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="너무 맛있어요."
+            android:text="dd"
             android:textSize="15dp"
             android:layout_weight="1"
             style="@style/Text.Regular"/>
