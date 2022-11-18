@@ -4,6 +4,7 @@ import android.app.Application
 import com.google.gson.JsonPrimitive
 import com.ssafy.smartstore.dto.Comment
 import com.ssafy.smartstore.response.MenuDetailWithCommentResponse
+import com.ssafy.smartstore.response.OrderDetailResponse
 import com.ssafy.smartstore.util.RetrofitUtil
 import retrofit2.Response
 
@@ -23,6 +24,10 @@ class StoreRepository(application: Application) {
 
     suspend fun deleteComment(comment: Comment): Response<JsonPrimitive> {
         return RetrofitUtil.commentService.delete(comment.id)
+    }
+
+    suspend fun getOrderInfo(orderId: Int): Response<List<OrderDetailResponse>> {
+        return RetrofitUtil.orderService.getOrderInfo(orderId)
     }
 
     companion object {

@@ -7,22 +7,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ssafy.smartstore.activity.MainActivity
 import com.ssafy.smartstore.adapter.AdapterItemClickListener
 import com.ssafy.smartstore.adapter.LatestOrderAdapter
 import com.ssafy.smartstore.adapter.NoticeAdapter
-import com.ssafy.smartstore.adapter.OrderAdapter
 import com.ssafy.smartstore.config.ApplicationClass
 import com.ssafy.smartstore.databinding.FragmentHomeBinding
 import com.ssafy.smartstore.response.LatestOrderResponse
 import com.ssafy.smartstore.service.OrderService
+import com.ssafy.smartstore.viewModels.ShoppingListViewModel
 
 // Home 탭
 private const val TAG = "HomeFragment_싸피"
 
 class HomeFragment : Fragment() {
+    private val shoppingListViewModel by lazy { ViewModelProvider(mainActivity, ShoppingListViewModel.Factory(mainActivity.application))[ShoppingListViewModel::class.java]}
     private lateinit var latestOrderAdapter: LatestOrderAdapter
     private var noticeAdapter: NoticeAdapter = NoticeAdapter()
     private lateinit var mainActivity: MainActivity
@@ -69,6 +71,8 @@ class HomeFragment : Fragment() {
                 // interface 메소드 구현
                 override fun onClick(view: View, position: Int, orderId: Any?) {
                     mainActivity.openFragment(1, "orderId", orderId as Int)
+                    shoppingListViewModel.shoppingListClear()
+                    shoppingListViewModel.shoppingListInitWithLatestOrder(orderId)
                 }
             })
         }

@@ -1,6 +1,8 @@
 package com.ssafy.smartstore.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,9 +17,9 @@ private const val TAG = "ShoppingListAdapter_싸피"
 
 class ShoppingListAdapter(
     val context: Context,
-    var list: MutableList<OrderDetail>,
     var fragment: ShoppingListFragment
 ) : RecyclerView.Adapter<ShoppingListAdapter.ShoppingListHolder>() {
+    var list: MutableList<OrderDetail> = mutableListOf()
     private lateinit var binding: ListItemShoppingListBinding
 
     inner class ShoppingListHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -32,7 +34,7 @@ class ShoppingListAdapter(
             binding.textShoppingMenuMoneyAll.text = (orderDetail.quantity * orderDetail.unitPrice).toString() + "원"
 
             binding.cancel.setOnClickListener {
-                list.remove(orderDetail)
+                fragment.shoppingListDelete(orderDetail)
                 notifyDataSetChanged()
                 fragment.moneyAndCountRefresh(list)
             }
@@ -51,4 +53,10 @@ class ShoppingListAdapter(
     override fun getItemCount(): Int {
         return list.size
     } // End of getItemCount
+
+    @SuppressLint("NotifyDataSetChanged")
+    internal fun setData(newItems: MutableList<OrderDetail>) {
+        this.list = newItems
+        notifyDataSetChanged()
+    }
 } // End of ShoppingListAdapter class

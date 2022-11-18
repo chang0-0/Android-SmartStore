@@ -11,7 +11,6 @@ import com.ssafy.smartstore.dto.Comment
 import com.ssafy.smartstore.fragment.MenuDetailFragment
 import com.ssafy.smartstore.response.MenuDetailWithCommentResponse
 
-private const val TAG = "CommentAdapter_싸피"
 class CommentAdapter(val productId: Int, val fragment: MenuDetailFragment) :RecyclerView.Adapter<CommentAdapter.ViewHolder>(){
     var list: List<MenuDetailWithCommentResponse> = emptyList()
 
@@ -27,11 +26,10 @@ class CommentAdapter(val productId: Int, val fragment: MenuDetailFragment) :Recy
     inner class ViewHolder(private val binding: ListItemCommentBinding) : RecyclerView.ViewHolder(binding.root) {
         fun setItem(item: MenuDetailWithCommentResponse) {
             binding.textNoticeContent.text = item.commentContent
-            binding.textNoticeContent.visibility = View.VISIBLE
             listView(item)
         }
 
-        fun listView(item: MenuDetailWithCommentResponse) {
+        private fun listView(item: MenuDetailWithCommentResponse) {
             val user = sharedPreferencesUtil.getUser()
             val comment = Comment(item.commentId, item.userId.toString(), productId, item.productRating.toFloat(), item.commentContent.toString())
 

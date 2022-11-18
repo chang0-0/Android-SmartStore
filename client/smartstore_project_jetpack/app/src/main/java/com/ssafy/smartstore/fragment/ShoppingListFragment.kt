@@ -12,6 +12,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ssafy.smartstore.R
@@ -24,6 +25,7 @@ import com.ssafy.smartstore.service.OrderService
 import com.ssafy.smartstore.util.RetrofitCallback
 import com.ssafy.smartstore.util.showToastMessage
 import com.ssafy.smartstore.viewModels.MainViewModel
+import com.ssafy.smartstore.viewModels.ShoppingListViewModel
 
 private const val TAG = "ShoppingListFragment_싸피"
 
@@ -37,8 +39,7 @@ class ShoppingListFragment(val orderId : Int) : Fragment() {
     private lateinit var btnOrder: Button
     private lateinit var txtShoppingCount: TextView
     private lateinit var txtShoppingMoney: TextView
-    var list = mutableListOf<OrderDetail>()
-
+    private val shoppingListViewModel by lazy { ViewModelProvider(mainActivity, ShoppingListViewModel.Factory(mainActivity.application))[ShoppingListViewModel::class.java]}
     private val activityViewModel by activityViewModels<MainViewModel>()
     private var isShop: Boolean = true
 
@@ -71,52 +72,24 @@ class ShoppingListFragment(val orderId : Int) : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        shoppingListAdapter = ShoppingListAdapter(requireContext(),this)
+
         // 일반 주문
-        if(orderId == 0) {
-            list = mainActivity.shoppingList
-            shoppingListAdapter = ShoppingListAdapter(requireContext(), list, this)
-            shoppingListRecyclerView.apply {
-                val linearLayoutManager = LinearLayoutManager(context)
-                linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
-                layoutManager = linearLayoutManager
-                adapter = shoppingListAdapter
-                //원래의 목록위치로 돌아오게함
-                adapter!!.stateRestorationPolicy =
-                    RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
+        shoppingListRecyclerView.apply {
+            adapter = shoppingListAdapter
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        }
+
+        // viewModel 관찰
+        shoppingListViewModel.shoppingList.observe(mainActivity) {
+            shoppingListViewModel.shoppingList.value?.let {
+                Log.d(TAG, "onViewCreated: 변경됨!!!!!! ${shoppingListViewModel.shoppingList.value}")
+                shoppingListAdapter.setData(it)
+                shoppingListAdapter.notifyDataSetChanged()
+                shoppingListRecyclerView.adapter = shoppingListAdapter
             }
         }
-        // 최근 주문 클릭 -> 장바구니에 해당 목록이 담긴 채로 표시
-        else {
-            val orderDetails = OrderService().getOrderDetails(orderId)
-            orderDetails.observe(
-                viewLifecycleOwner
-            ) { orderDetails ->
-                orderDetails.let {
-                    for (orderDetail in orderDetails) {
-                        var detail = OrderDetail(productId = orderDetail.productId, quantity = orderDetail.quantity)
-                        detail.img = orderDetail.img
-                        detail.productName = orderDetail.productName
-                        detail.unitPrice = orderDetail.unitPrice
-                        list.add(detail)
-                    }
-                    shoppingListAdapter =
-                        ShoppingListAdapter(mainActivity, list, this@ShoppingListFragment)
-                }
-
-                shoppingListRecyclerView.apply {
-                    val linearLayoutManager = LinearLayoutManager(context)
-                    linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
-                    layoutManager = linearLayoutManager
-                    adapter = shoppingListAdapter
-                    //원래의 목록위치로 돌아오게함
-                    adapter!!.stateRestorationPolicy =
-                        RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
-                }
-
-                moneyAndCountRefresh(list)
-            }
-        }
-        moneyAndCountRefresh(list)
+        moneyAndCountRefresh(shoppingListViewModel.shoppingList.value!!)
 
         btnShop.setOnClickListener {
             btnShop.background =
@@ -147,6 +120,13 @@ class ShoppingListFragment(val orderId : Int) : Fragment() {
         super.onDestroy()
         mainActivity.hideBottomNav(false)
     }
+
+    fun shoppingListDelete(orderDetail: OrderDetail) {
+        Log.d(TAG, "shoppingListDelete: list : shoppingList1 : ${shoppingListViewModel.shoppingList.value}")
+        shoppingListViewModel.shoppingListDelete(orderDetail)
+        Log.d(TAG, "shoppingListDelete: list : shoppingList2 : ${shoppingListViewModel.shoppingList.value}")
+    }
+
 
     // 화면 하단에 장바구니에 담긴 상품의 총액, 개수 표시
     fun moneyAndCountRefresh(list: MutableList<OrderDetail>) {
@@ -209,7 +189,7 @@ class ShoppingListFragment(val orderId : Int) : Fragment() {
         val order = Order().apply {
             userId = ApplicationClass.sharedPreferencesUtil.getUser().id
             orderTable = "${activityViewModel.tableId}번 테이블"
-            for (detail in list) {
+            for (detail in shoppingListViewModel.shoppingList.value!!) {
                 details.add(OrderDetail(productId = detail.productId, quantity = detail.quantity))
             }
         }
@@ -218,7 +198,7 @@ class ShoppingListFragment(val orderId : Int) : Fragment() {
         requireContext().showToastMessage("주문이 완료되었습니다.");
 
         // 장바구니 초기화 -> 추후 livedata로 바뀔 시 수정 필요
-        mainActivity.shoppingList = mutableListOf()
+        shoppingListViewModel.shoppingListClear()
 
         mainActivity.supportFragmentManager.beginTransaction()
             .replace(R.id.frame_layout_main, OrderFragment())

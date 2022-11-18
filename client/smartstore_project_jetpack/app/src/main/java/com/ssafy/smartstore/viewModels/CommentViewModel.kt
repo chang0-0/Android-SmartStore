@@ -1,14 +1,12 @@
 package com.ssafy.smartstore.viewModels
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.*
 import com.ssafy.smartstore.dto.Comment
 import com.ssafy.smartstore.repository.StoreRepository
 import com.ssafy.smartstore.response.MenuDetailWithCommentResponse
 import kotlinx.coroutines.launch
 
-private const val TAG = "MainViewModel2_싸피"
 class CommentViewModel(private val repository: StoreRepository, productId: Int) : ViewModel() {
 
     private var _commentList = MutableLiveData<List<MenuDetailWithCommentResponse>>()
@@ -28,7 +26,6 @@ class CommentViewModel(private val repository: StoreRepository, productId: Int) 
 
     fun updateComment(comment: Comment) = viewModelScope.launch {
         val response = repository.updateComment(comment)
-        Log.d(TAG, "updateComment: response: ${response.body()}")
         if(response.isSuccessful) _commentList.value = repository.getComments(comment.productId)
     }
 
