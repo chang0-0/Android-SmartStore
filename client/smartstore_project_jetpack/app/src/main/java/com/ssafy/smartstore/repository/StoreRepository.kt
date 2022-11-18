@@ -1,20 +1,29 @@
 package com.ssafy.smartstore.repository
 
 import android.app.Application
-import android.util.Log
-import androidx.lifecycle.LiveData
-import com.ssafy.smartstore.api.ProductApi
+import com.google.gson.JsonPrimitive
+import com.ssafy.smartstore.dto.Comment
 import com.ssafy.smartstore.response.MenuDetailWithCommentResponse
 import com.ssafy.smartstore.util.RetrofitUtil
+import retrofit2.Response
 
-private const val TAG = "StoreRepository_싸피"
 class StoreRepository(application: Application) {
     suspend fun getComments(productId: Int): List<MenuDetailWithCommentResponse> {
-        Log.d(TAG, "getComments: productId: ${productId}")
         val response = RetrofitUtil.productService.getProductWithComments(productId)
         return response.body() as List<MenuDetailWithCommentResponse>
     }
 
+    suspend fun insertComment(comment: Comment): Response<JsonPrimitive> {
+        return RetrofitUtil.commentService.insert(comment)
+    }
+
+    suspend fun updateComment(comment: Comment): Response<JsonPrimitive> {
+        return RetrofitUtil.commentService.update(comment)
+    }
+
+    suspend fun deleteComment(comment: Comment): Response<JsonPrimitive> {
+        return RetrofitUtil.commentService.delete(comment.id)
+    }
 
     companion object {
         private var instance: StoreRepository? = null
