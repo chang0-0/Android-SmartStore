@@ -5,7 +5,6 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import com.ssafy.smartstore.api.ProductApi
 import com.ssafy.smartstore.response.MenuDetailWithCommentResponse
-import com.ssafy.smartstore.response.MenuDetailWithCommentResponseList
 import com.ssafy.smartstore.util.RetrofitUtil
 
 private const val TAG = "StoreRepository_싸피"
@@ -21,7 +20,7 @@ class StoreRepository(application: Application) {
         private var instance: StoreRepository? = null
 
         fun getInstance(application: Application): StoreRepository? {
-            if(instance == null) instance = StoreRepository(application)
+            if (instance == null) instance = StoreRepository(application)
             return instance
         }
     }

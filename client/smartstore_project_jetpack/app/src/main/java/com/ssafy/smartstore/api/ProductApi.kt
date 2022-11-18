@@ -2,7 +2,6 @@ package com.ssafy.smartstore.api
 
 import com.ssafy.smartstore.dto.Product
 import com.ssafy.smartstore.response.MenuDetailWithCommentResponse
-import com.ssafy.smartstore.response.MenuDetailWithCommentResponseList
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.GET

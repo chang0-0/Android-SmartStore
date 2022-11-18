@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.Application
 import com.ssafy.smartstore.intercepter.AddCookiesInterceptor
 import com.ssafy.smartstore.intercepter.ReceivedCookiesInterceptor
+import com.ssafy.smartstore.repository.UserRepository
 import com.ssafy.smartstore.util.SharedPreferencesUtil
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -30,12 +31,15 @@ class ApplicationClass : Application() {
 
         // 주문 준비 완료 확인 시간 1분
         const val ORDER_COMPLETED_TIME = 60*1000
-
     }
 
 
     override fun onCreate() {
         super.onCreate()
+
+        // userRepository 실행. (싱글톤)
+        UserRepository.initialize(this)
+
 
         //shared preference 초기화
         sharedPreferencesUtil = SharedPreferencesUtil(applicationContext)

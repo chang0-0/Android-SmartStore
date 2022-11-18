@@ -15,7 +15,6 @@ import com.ssafy.smartstore.databinding.ListItemCommentBinding
 import com.ssafy.smartstore.dto.Comment
 import com.ssafy.smartstore.fragment.MenuDetailFragment
 import com.ssafy.smartstore.response.MenuDetailWithCommentResponse
-import com.ssafy.smartstore.response.MenuDetailWithCommentResponseList
 import com.ssafy.smartstore.service.CommentService
 import com.ssafy.smartstore.util.RetrofitCallback
 import kotlinx.coroutines.CoroutineScope

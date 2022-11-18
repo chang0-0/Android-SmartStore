@@ -22,8 +22,10 @@ import com.ssafy.smartstore.config.ApplicationClass
 import com.ssafy.smartstore.databinding.ActivityMainBinding
 import com.ssafy.smartstore.dto.OrderDetail
 import com.ssafy.smartstore.fragment.*
+import com.ssafy.smartstore.util.SharedPreferencesUtil
 import com.ssafy.smartstore.util.showToastMessage
 import com.ssafy.smartstore.viewModels.MainViewModel
+import com.ssafy.smartstore.viewModels.UserViewModel
 
 private const val TAG = "MainActivity_싸피"
 
@@ -35,6 +37,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var filters: Array<IntentFilter>
     private lateinit var pIntent: PendingIntent
     private val newActivityViewModel: MainViewModel by viewModels()
+    private val userViewModel : UserViewModel by viewModels()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,6 +54,8 @@ class MainActivity : AppCompatActivity() {
 
         checkPermissions()
 
+        // 처음 MainActivity가 열리면서, sharedPreference에 있는 값을 가져와서 user의 정보를 가져온다.
+        userDataSet()
 
         supportFragmentManager.beginTransaction()
             .replace(R.id.frame_layout_main, HomeFragment())
@@ -222,6 +228,20 @@ class MainActivity : AppCompatActivity() {
                 false
             }
         }
+    }
+
+    private fun userDataSet() {
+        val user = SharedPreferencesUtil(this).getUser()
+        Log.d(TAG, "@@@@@@@@@@@@@@@@@  userDataSet: $user ")
+
+        // user 정보 viewModel에 저장해서 LiveData로 관리
+       //val userViewModel = UserViewModel(this.UserViewModelFactory).get(main)
+
+
+
+
+
+
     }
 
     private fun parseData(intent: Intent) {
