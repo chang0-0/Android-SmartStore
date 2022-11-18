@@ -27,27 +27,27 @@ class MainViewModel : ViewModel() {
     val _productInfo : LiveData<List<MenuDetailWithCommentResponse>>
         get() = productInfo
 
-    fun getProductInfo(productId: Int, callback: RetrofitCallback<List<MenuDetailWithCommentResponse>>) {
-        val menuInfoRequest: Call<List<MenuDetailWithCommentResponse>> = RetrofitUtil.productService.getProductWithComments(productId)
-
-        menuInfoRequest.enqueue(object : Callback<List<MenuDetailWithCommentResponse>> {
-            override fun onResponse(call: Call<List<MenuDetailWithCommentResponse>>, response: Response<List<MenuDetailWithCommentResponse>>) {
-                val res = response.body()
-                Log.d(TAG, "onResponse: response: ${res}")
-                if(response.code() == 200){
-                    if (res != null) {
-                        callback.onSuccess(response.code(), res)
-                        productInfo.value = res!!
-                    }
-                } else {
-                    callback.onFailure(response.code())
-                }
-            }
-
-            override fun onFailure(call: Call<List<MenuDetailWithCommentResponse>>, t: Throwable) {
-                callback.onError(t)
-            }
-        })
-    }
+//    fun getProductInfo(productId: Int, callback: RetrofitCallback<List<MenuDetailWithCommentResponse>>) {
+//        val menuInfoRequest: Call<List<MenuDetailWithCommentResponse>> = RetrofitUtil.productService.getProductWithComments(productId)
+//
+//        menuInfoRequest.enqueue(object : Callback<List<MenuDetailWithCommentResponse>> {
+//            override fun onResponse(call: Call<List<MenuDetailWithCommentResponse>>, response: Response<List<MenuDetailWithCommentResponse>>) {
+//                val res = response.body()
+//                Log.d(TAG, "onResponse: response: ${res}")
+//                if(response.code() == 200){
+//                    if (res != null) {
+//                        callback.onSuccess(response.code(), res)
+//                        productInfo.value = res!!
+//                    }
+//                } else {
+//                    callback.onFailure(response.code())
+//                }
+//            }
+//
+//            override fun onFailure(call: Call<List<MenuDetailWithCommentResponse>>, t: Throwable) {
+//                callback.onError(t)
+//            }
+//        })
+//    }
 
 }

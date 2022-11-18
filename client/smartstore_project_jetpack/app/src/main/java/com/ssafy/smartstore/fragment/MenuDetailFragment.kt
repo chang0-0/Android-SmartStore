@@ -29,17 +29,17 @@ import com.ssafy.smartstore.util.CommonUtils
 import com.ssafy.smartstore.util.RetrofitCallback
 import com.ssafy.smartstore.util.showToastMessage
 import com.ssafy.smartstore.viewModels.MainViewModel
+import com.ssafy.smartstore.viewModels.MainViewModel2
 import kotlinx.coroutines.Dispatchers
 import kotlin.math.round
 
 //메뉴 상세 화면 . Order탭 - 특정 메뉴 선택시 열림
 private const val TAG = "MenuDetailFragment_싸피"
 class MenuDetailFragment : Fragment(){
-    private lateinit var viewModel: MainViewModel
+    private val viewModel by lazy { ViewModelProvider(this, MainViewModel2.Factory(mainActivity.application, productId))[MainViewModel2::class.java]}
     private lateinit var mainActivity: MainActivity
     private var productId = -1
     lateinit var commentAdapter : CommentAdapter
-    lateinit var menuDetailWithCommentResponse : MenuDetailWithCommentResponse
 
     private lateinit var binding:FragmentMenuDetailBinding
     override fun onAttach(context: Context) {
@@ -69,35 +69,45 @@ class MenuDetailFragment : Fragment(){
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d(TAG, "onViewCreated: 생성?")
-        viewModel = ViewModelProvider(mainActivity).get(MainViewModel::class.java)
-        Log.d(TAG, "onViewCreated: 생성!")
-        refreshCommentList()
+//        viewModel = ViewModelProvider(mainActivity).get(MainViewModel::class.java)
+//        viewModel.getProductInfo(productId, ProductWithCommentInsertCallback())
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = this
+
         initAdapter()
         initListener()
-
 
     }
 
     // comment adapter 초기화
     private fun initAdapter() {
         commentAdapter = CommentAdapter(productId, this)
-        viewModel._productInfo.observe(mainActivity) {
-            commentAdapter.list = it
-            commentAdapter.notifyDataSetChanged()
-        }
+//        viewModel._productInfo.observe(mainActivity) {
+//            commentAdapter.list = it
+//            commentAdapter.notifyDataSetChanged()
+//        }
         binding.recyclerViewMenuDetail.apply {
             adapter = commentAdapter
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         }
-    }
+        viewModel.productInfo.observe(mainActivity) {
+            viewModel.productInfo.value?.let {
+                commentAdapter.list = it
+                commentAdapter.notifyDataSetChanged()
+                Log.d(TAG, "initAdapter: 리스트: ${it}")
 
-    fun refreshCommentList() {
-        CoroutineScope(Dispatchers.IO).launch {
-            delay(100)  // 데이터 갱신 후 화면 표시를 위한 delay
-            viewModel.getProductInfo(productId, ProductWithCommentInsertCallback())
+                setScreen(it[0])
+            }
         }
     }
+
+//    // 댓글 리스트 갱신
+//    fun refreshCommentList() {
+//        CoroutineScope(Dispatchers.IO).launch {
+//            delay(50)  // 데이터 갱신 후 화면 표시를 위한 delay
+//            viewModel.getProductInfo(productId, ProductWithCommentInsertCallback())
+//        }
+//    }
 
     // 초기 화면 설정
     @SuppressLint("NotifyDataSetChanged")
@@ -111,10 +121,6 @@ class MenuDetailFragment : Fragment(){
         binding.txtMenuPrice.text = "${CommonUtils.makeComma(menu.productPrice)}"
         binding.txtRating.text = "${(round(menu.productRatingAvg*10) /10)}점"
         binding.ratingBar.rating = menu.productRatingAvg.toFloat()/2
-
-        commentAdapter.notifyDataSetChanged()
-        binding.recyclerViewMenuDetail.adapter = commentAdapter
-
     }
 
     private fun initListener(){
@@ -136,10 +142,10 @@ class MenuDetailFragment : Fragment(){
             requireContext().showToastMessage("상품이 장바구니에 담겼습니다.")
             val orderDetail = OrderDetail(productId, binding.textMenuCount.text.toString().toInt())
             orderDetail.apply {
-                productName = menuDetailWithCommentResponse.productName
-                unitPrice = menuDetailWithCommentResponse.productPrice
-                img = menuDetailWithCommentResponse.productImg
-                productType = menuDetailWithCommentResponse.type
+//                productName = viewModel._productInfo.value?.get(0)!!.productName
+//                unitPrice = viewModel._productInfo.value?.get(0)!!.productPrice
+//                img = viewModel._productInfo.value?.get(0)!!.productImg
+//                productType = viewModel._productInfo.value?.get(0)!!.type
             }
 
             mainActivity.shoppingList.add(orderDetail)  // 장바구니에 상품 추가
@@ -203,7 +209,6 @@ class MenuDetailFragment : Fragment(){
                 Log.d(TAG, "initData: ${responseData}")
                 // 화면 정보 갱신
                 setScreen(responseData[0])
-                menuDetailWithCommentResponse = responseData[0]
             }
         }
 
@@ -219,7 +224,7 @@ class MenuDetailFragment : Fragment(){
     // 댓글 등록 서비스 호출
     private fun insert(comment: Comment) {
         CommentService().insert(comment, InsertCallback())
-        refreshCommentList()
+//        refreshCommentList()
     }
 
     inner class InsertCallback: RetrofitCallback<Boolean> {

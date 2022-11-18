@@ -1,23 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout>
+    <data>
+        <variable
+            name="viewModel"
+            type="com.ssafy.smartstore.viewModels.MainViewModel2" />
+    </data>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:orientation="vertical">
 
-    <ImageView
+        <ImageView
             android:id="@+id/menuImage"
             android:background="@color/coffee_menu_back"
             android:layout_width="match_parent"
             android:layout_height="150dp"
             android:scaleType="fitCenter"
             android:src="@drawable/coffee1" />
-    <LinearLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
             android:orientation="vertical">
-        <TextView
+            <TextView
                 android:id="@+id/txtMenuName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -25,44 +31,44 @@
                 android:textSize="40dp"
                 style="@style/Text.Title"
                 android:layout_marginBottom="30dp"/>
-        <LinearLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp">
-            <TextView
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="가격"
                     android:textSize="30dp"
                     android:layout_weight="1"
                     style="@style/Text.Regular"/>
-            <TextView
+                <TextView
                     android:id="@+id/txtMenuPrice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="4,000원"
                     android:textSize="30dp"
                     style="@style/Text.light"/>
-        </LinearLayout>
+            </LinearLayout>
 
-        <LinearLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-            <TextView
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="수량"
                     android:textSize="30dp"
                     android:layout_weight="1"
                     style="@style/Text.Regular"/>
-            <ImageButton
+                <ImageButton
                     android:id="@+id/btnMinusCount"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:backgroundTint="@color/coffee_point_red"
                     android:background="@drawable/minus" />
 
-            <TextView
+                <TextView
                     android:id="@+id/textMenuCount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -71,22 +77,22 @@
                     android:layout_marginHorizontal="10dp"
                     style="@style/Text.light"/>
 
-            <ImageButton
+                <ImageButton
                     android:id="@+id/btnAddCount"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:backgroundTint="@color/coffee_point_red"
                     android:background="@drawable/add" />
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
-    <LinearLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:backgroundTint = "@null"
             android:background="@color/coffee_menu_back"
             android:paddingHorizontal="5dp"
             android:layout_marginBottom="20dp">
-        <TextView
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="평점"
@@ -94,7 +100,7 @@
                 android:layout_marginRight="10dp"
                 style="@style/Text.Title"/>
 
-        <TextView
+            <TextView
                 android:id="@+id/txtRating"
                 style="@style/Text.light"
                 android:layout_width="wrap_content"
@@ -103,26 +109,26 @@
                 android:text="4.4 점"
                 android:textSize="30dp" />
 
-        <RatingBar
+            <RatingBar
                 android:id="@+id/ratingBar"
                 style="@style/Widget.AppCompat.RatingBar.Indicator"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:numStars="5"
                 android:rating="4.4" />
-    </LinearLayout>
-    <LinearLayout
+        </LinearLayout>
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="5dp">
-        <EditText
+            <EditText
                 android:id="@+id/comment_edt"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:layout_weight="1"
                 android:background="@drawable/button_non_color"
                 style="@style/Text.Title"/>
-        <Button
+            <Button
                 android:id="@+id/btnCreateComment"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
@@ -130,20 +136,21 @@
                 app:backgroundTint="@null"
                 android:background="@drawable/button_go_order"
                 style="@style/Text.Title"/>
-    </LinearLayout>
+        </LinearLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewMenuDetail"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginHorizontal="5dp"
             android:layout_weight="1" />
 
-    <Button
+        <Button
             android:id="@+id/btnAddList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/coffee_point_red"
             android:text="담기"/>
 
-</LinearLayout>
+    </LinearLayout>
+</layout>
