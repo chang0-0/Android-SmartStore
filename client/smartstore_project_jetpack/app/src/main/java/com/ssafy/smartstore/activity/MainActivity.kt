@@ -16,7 +16,6 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.ssafy.smartstore.R
 import com.ssafy.smartstore.api.UserApi
@@ -28,7 +27,6 @@ import com.ssafy.smartstore.util.SharedPreferencesUtil
 import com.ssafy.smartstore.util.showToastMessage
 import com.ssafy.smartstore.viewModels.MainViewModel
 import com.ssafy.smartstore.viewModels.UserViewModel
-import com.ssafy.smartstore.viewModels.UserViewModelFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -62,14 +60,9 @@ class MainActivity : AppCompatActivity() {
 
         checkPermissions()
 
-
         CoroutineScope(Dispatchers.IO).launch {
             setUserData()
         }
-
-        //setUserData()
-
-        // 처음 MainActivity가 열리면서, sharedPreference에 있는 값을 가져와서 user의 정보를 가져온다.
 
 
         supportFragmentManager.beginTransaction()
@@ -115,11 +108,10 @@ class MainActivity : AppCompatActivity() {
         //userViewModel = ViewModelProvider(this, UserViewModelFactory(userApi = userApi, userRepository)).get(UserViewModel::class.java)
         Log.d(TAG, "setUserData 실행:  setUserData ")
 
+        // user 정보 viewModel에 저장해서 LiveData로 관리
         userViewModel.getUserData(user.id)
-
         Log.d(TAG, "userDataSet@@@@@@@@@@@@@@: ${userViewModel.userData.value?.id}")
 
-        // user 정보 viewModel에 저장해서 LiveData로 관리
         //val userViewModel = UserViewModel(this.UserViewModelFactory).get(main)
     } // End of setUserData 
 

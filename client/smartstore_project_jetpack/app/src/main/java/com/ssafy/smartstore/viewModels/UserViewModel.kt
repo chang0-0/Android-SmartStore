@@ -1,16 +1,15 @@
 package com.ssafy.smartstore.viewModels
 
 import android.util.Log
-import androidx.lifecycle.*
-import com.ssafy.smartstore.api.UserApi
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.ssafy.smartstore.dto.User
-import com.ssafy.smartstore.repository.UserRepository
 import com.ssafy.smartstore.repository.UserRepositoryImpl
-import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 private const val TAG = "UserViewModel_싸피"
 
@@ -36,6 +35,7 @@ class UserViewModel() :
         if (response.isSuccessful) {
             val result = response.body()
 
+            _userData.value = result
             Log.d(TAG, "getUserData: $result ")
 
             withContext(Main) {

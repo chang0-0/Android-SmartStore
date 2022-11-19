@@ -11,18 +11,4 @@ interface UserRepository {
 
     // user데이터 가져오기
     suspend fun getUserData(userId: String): Response<User>
-
-//    companion object {
-//        private var INSTANCE: UserRepository? = null
-//
-//        fun initialize(context: Context) {
-//            if (INSTANCE == null) {
-//                INSTANCE = UserRepository(userApi)
-//            }
-//        }
-//
-//        fun get(): UserRepository {
-//            return INSTANCE ?: throw IllegalArgumentException("User")
-//        }
-//    }
 }

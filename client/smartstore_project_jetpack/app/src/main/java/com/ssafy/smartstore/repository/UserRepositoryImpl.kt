@@ -1,6 +1,5 @@
 package com.ssafy.smartstore.repository
 
-import android.app.Application
 import com.ssafy.smartstore.api.UserApi
 import com.ssafy.smartstore.config.ApplicationClass
 import com.ssafy.smartstore.dto.User

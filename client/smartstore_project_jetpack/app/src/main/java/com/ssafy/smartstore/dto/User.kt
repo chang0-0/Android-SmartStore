@@ -1,7 +1,9 @@
 package com.ssafy.smartstore.dto
 
 import Stamp
+import androidx.annotation.Keep
 
+@Keep
 data class User (
     var id: String,
     var name: String,
