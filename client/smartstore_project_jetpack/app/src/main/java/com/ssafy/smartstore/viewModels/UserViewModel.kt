@@ -34,7 +34,9 @@ class UserViewModel() :
         Log.d(TAG, "ViewModel getUserData:${response.body()} ")
 
         if (response.isSuccessful) {
-            val result = response.body()
+//            val result = response.body()
+            val userInfoResponse = response.body()
+            val result = userInfoResponse!!.user
 
             _userData.value = result
             Log.d(TAG, "getUserData: $result ")

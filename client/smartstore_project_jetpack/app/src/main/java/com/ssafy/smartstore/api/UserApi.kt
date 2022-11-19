@@ -2,6 +2,7 @@ package com.ssafy.smartstore.api
 
 import com.google.gson.JsonPrimitive
 import com.ssafy.smartstore.dto.User
+import com.ssafy.smartstore.response.UserInfoResponse
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
@@ -17,7 +18,7 @@ interface UserApi {
 
     // 사용자의 정보와 함께 사용자의 주문 내역, 사용자 등급 정보를 반환한다.
     @GET("rest/user/info") // rest/user/info?id=iop90 형식
-    suspend fun getInfo(@Query("id") id: String): Response<User>
+    suspend fun getInfo(@Query("id") id: String): Response<UserInfoResponse>
 
     // request parameter로 전달된 id가 이미 사용중인지 반환한다.
     @GET("rest/user/isUsed")

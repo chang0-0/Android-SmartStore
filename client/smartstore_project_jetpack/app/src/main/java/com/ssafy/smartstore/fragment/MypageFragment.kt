@@ -90,9 +90,9 @@ class MypageFragment : Fragment() {
     }
 
     // user id get & stamp 정보 화면에 표시
-    private suspend fun getUserData(): String {
+    private fun getUserData(): String {
         user = ApplicationClass.sharedPreferencesUtil.getUser()
-        //binding.textUserName.text = user.name
+        binding.textUserName.text = user.name
 
         val userApi : UserApi
 
