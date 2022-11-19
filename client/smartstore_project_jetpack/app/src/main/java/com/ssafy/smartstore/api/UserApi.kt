@@ -10,7 +10,8 @@ import retrofit2.http.POST
 import retrofit2.http.Query
 
 interface UserApi {
-    // 사용자 정보를 추가한다.
+
+    // 사용자 정보를 추가한다(회원가입)
     @POST("rest/user")
     fun insert(@Body body: User): Call<Boolean>
 

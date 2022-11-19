@@ -17,4 +17,7 @@ interface UserRepository {
     // ID 중복체크
     suspend fun checkUserId(userId : String) : Call<Boolean>
 
+    // 회원가입
+    suspend fun joinUser(user : User) : Call<Boolean>
+
 }
