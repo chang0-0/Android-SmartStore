@@ -21,6 +21,7 @@ class UserViewModel() :
     val userData: LiveData<User>
         get() = _userData
 
+
     // LiveData를 관리하는 함수를 만드는거임
     // viewModel에서 repository를 호출한다.
     // viewModel 에서 호출하면, repository에 오고,
@@ -48,4 +49,6 @@ class UserViewModel() :
             Log.d(TAG, "getUserData: ${response.errorBody()}")
         }
     }
+
+
 }

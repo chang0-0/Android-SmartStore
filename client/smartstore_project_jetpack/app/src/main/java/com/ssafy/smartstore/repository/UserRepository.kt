@@ -1,6 +1,8 @@
 package com.ssafy.smartstore.repository
 
+import com.google.gson.JsonPrimitive
 import com.ssafy.smartstore.dto.User
+import retrofit2.Call
 import retrofit2.Response
 
 private const val TAG = "UserRepository_싸피"
@@ -11,4 +13,8 @@ interface UserRepository {
 
     // user데이터 가져오기
     suspend fun getUserData(userId: String): Response<User>
+
+    // ID 중복체크
+    suspend fun checkUserId(userId : String) : Call<Boolean>
+
 }

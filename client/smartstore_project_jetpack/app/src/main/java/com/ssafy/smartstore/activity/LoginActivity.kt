@@ -3,13 +3,18 @@ package com.ssafy.smartstore.activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.activity.viewModels
 import com.ssafy.smartstore.fragment.JoinFragment
 import com.ssafy.smartstore.fragment.LoginFragment
 import com.ssafy.smartstore.R
 import com.ssafy.smartstore.config.ApplicationClass.Companion.sharedPreferencesUtil
+import com.ssafy.smartstore.viewModels.LoginViewModel
+import com.ssafy.smartstore.viewModels.UserViewModel
 
 private const val TAG = "LoginActivity_싸피"
 class LoginActivity : AppCompatActivity() {
+    private val loginViewModel : LoginViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
