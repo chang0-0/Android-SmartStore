@@ -1,5 +1,6 @@
 package com.ssafy.smartstore.fragment
 
+import android.app.Application
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
@@ -7,28 +8,36 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ssafy.smartstore.activity.MainActivity
 import com.ssafy.smartstore.adapter.AdapterItemClickListener
 import com.ssafy.smartstore.adapter.OrderAdapter
+import com.ssafy.smartstore.api.UserApi
 import com.ssafy.smartstore.config.ApplicationClass
 import com.ssafy.smartstore.databinding.FragmentMypageBinding
 import com.ssafy.smartstore.dto.User
 import com.ssafy.smartstore.response.LatestOrderResponse
 import com.ssafy.smartstore.service.OrderService
 import com.ssafy.smartstore.viewModels.UserViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 // MyPage 탭
 private const val TAG = "MypageFragment_싸피"
+
 
 class MypageFragment : Fragment() {
     private lateinit var orderAdapter: OrderAdapter
     private lateinit var mainActivity: MainActivity
     private lateinit var list: List<LatestOrderResponse>
     private lateinit var user: User
-    private val userViewModel: UserViewModel by activityViewModels()
+    private lateinit var userViewModel: UserViewModel
 
     private lateinit var binding: FragmentMypageBinding
     override fun onAttach(context: Context) {
@@ -48,8 +57,10 @@ class MypageFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val id = getUserData()
-        initData(id)
+        CoroutineScope(Dispatchers.Main).launch {
+            val id = getUserData()
+            initData(id)
+        }
     }
 
     private fun initData(id: String) {
@@ -79,29 +90,55 @@ class MypageFragment : Fragment() {
     }
 
     // user id get & stamp 정보 화면에 표시
-    private fun getUserData(): String {
+    private suspend fun getUserData(): String {
         user = ApplicationClass.sharedPreferencesUtil.getUser()
-        binding.textUserName.text = user.name
+        //binding.textUserName.text = user.name
 
-        userViewModel.getUserInfo(user.id)
+        val userApi : UserApi
+
+        Log.d(TAG, "getUserData 테스트: ")
+
+        // viewModel에 매개변수가 있을 때는 ViewModelProvider.Factory를 사용해야 한다.
+//        val userViewModel: UserViewModel by viewModels {
+//            object : ViewModelProvider.Factory {
+//                override fun <T : ViewModel> create(modelClass: Class<T>): T {
+//                    return UserViewModel(userApi) as T
+//                }
+//            }
+//        }
+
+//        this.userViewModel = userViewModel
+//        userViewModel.getUserInfo(user.id)
+//        Log.d(TAG, "getUserData@@@@@@@@@@@@@@@@@@@@: ${userViewModel.userInfo.value?.body()}")
+//
+//
+//        userViewModel.userInfo.observe(viewLifecycleOwner, Observer {
+//            if (it.isSuccessful) {
+//                Log.d(TAG, "getUserData: ${it.body()?.id}")
+//            } else {
+//                Log.d(TAG, "getUserData: ${it.errorBody().toString()}")
+//            }
+//        })
+
 
         // 데이터가 변하면 화면을 자동으로 갱신
-        userViewModel.userInfo.observe(viewLifecycleOwner) {
-            Log.d(TAG, " @@@@@@@@@@@ userViewModel 옵저버 동작 @@@@@@@@@@@@@@@: ")
+//        userViewModel.userInfo.observe(viewLifecycleOwner) {
+//            Log.d(TAG, " @@@@@@@@@@@ userViewModel 옵저버 동작 @@@@@@@@@@@@@@@: ")
+//
+//            binding.textUserName.text = it.body()?.id.toString()
+//            var stampDetail = stampLevelCalc(it.body()?.stamps ?: 0)
+//            binding.textUserLevel.text = "${stampDetail.levelName} ${stampDetail.levelDetail}단계"
+//            binding.textLevelRest.text = "다음 레벨까지 ${stampDetail.levelRest}잔 남았습니다."
+//            binding.proBarUserLevel.setProgress(stampDetail.levelProgressRatio) // 백분율
+//            binding.textUserNextLevel.text = stampDetail.nextLevelCountText
+//        }
 
-            binding.textUserName.text = it.name
-            var stampDetail = stampLevelCalc(it.stamps)
-            binding.textUserLevel.text = "${stampDetail.levelName} ${stampDetail.levelDetail}단계"
-            binding.textLevelRest.text = "다음 레벨까지 ${stampDetail.levelRest}잔 남았습니다."
-            binding.proBarUserLevel.setProgress(stampDetail.levelProgressRatio) // 백분율
-            binding.textUserNextLevel.text = stampDetail.nextLevelCountText
-        }
-
-        var stampDetail = stampLevelCalc(user.stamps)
-        binding.textUserLevel.text = "${stampDetail.levelName} ${stampDetail.levelDetail}단계"
-        binding.textLevelRest.text = "다음 레벨까지 ${stampDetail.levelRest}잔 남았습니다."
-        binding.proBarUserLevel.setProgress(stampDetail.levelProgressRatio) // 백분율
-        binding.textUserNextLevel.text = stampDetail.nextLevelCountText
+        // viewModel 적용 이전 코드
+//        var stampDetail = stampLevelCalc(user.stamps)
+//        binding.textUserLevel.text = "${stampDetail.levelName} ${stampDetail.levelDetail}단계"
+//        binding.textLevelRest.text = "다음 레벨까지 ${stampDetail.levelRest}잔 남았습니다."
+//        binding.proBarUserLevel.setProgress(stampDetail.levelProgressRatio) // 백분율
+//        binding.textUserNextLevel.text = stampDetail.nextLevelCountText
 
         return user.id
     }

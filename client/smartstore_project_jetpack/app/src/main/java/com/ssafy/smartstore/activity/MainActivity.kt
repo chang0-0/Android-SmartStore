@@ -16,29 +16,37 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.ssafy.smartstore.R
+import com.ssafy.smartstore.api.UserApi
 import com.ssafy.smartstore.config.ApplicationClass
 import com.ssafy.smartstore.databinding.ActivityMainBinding
-import com.ssafy.smartstore.dto.OrderDetail
 import com.ssafy.smartstore.fragment.*
+import com.ssafy.smartstore.repository.UserRepository
 import com.ssafy.smartstore.util.SharedPreferencesUtil
 import com.ssafy.smartstore.util.showToastMessage
 import com.ssafy.smartstore.viewModels.MainViewModel
 import com.ssafy.smartstore.viewModels.UserViewModel
+import com.ssafy.smartstore.viewModels.UserViewModelFactory
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 private const val TAG = "MainActivity_싸피"
 
 class MainActivity : AppCompatActivity() {
     private lateinit var bottomNavigation: BottomNavigationView
-    var shoppingList = mutableListOf<OrderDetail>()
     private lateinit var nAdapter: NfcAdapter
     private lateinit var binding: ActivityMainBinding
     private lateinit var filters: Array<IntentFilter>
     private lateinit var pIntent: PendingIntent
+    private lateinit var userApi: UserApi
     private val newActivityViewModel: MainViewModel by viewModels()
-    private val userViewModel: UserViewModel by viewModels()
+    private lateinit var userRepository: UserRepository
 
+    //private lateinit var userViewModel: UserViewModel
+    private val userViewModel: UserViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,8 +62,15 @@ class MainActivity : AppCompatActivity() {
 
         checkPermissions()
 
+
+        CoroutineScope(Dispatchers.IO).launch {
+            setUserData()
+        }
+
+        //setUserData()
+
         // 처음 MainActivity가 열리면서, sharedPreference에 있는 값을 가져와서 user의 정보를 가져온다.
-        userDataSet()
+
 
         supportFragmentManager.beginTransaction()
             .replace(R.id.frame_layout_main, HomeFragment())
@@ -93,6 +108,20 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+    private suspend fun setUserData() { // 사용자 데이터 viewModel에 저장. 반영
+        val user = SharedPreferencesUtil(this).getUser()
+
+        //userViewModel = ViewModelProvider(this, UserViewModelFactory(userApi = userApi, userRepository)).get(UserViewModel::class.java)
+        Log.d(TAG, "setUserData 실행:  setUserData ")
+
+        userViewModel.getUserData(user.id)
+
+        Log.d(TAG, "userDataSet@@@@@@@@@@@@@@: ${userViewModel.userData.value?.id}")
+
+        // user 정보 viewModel에 저장해서 LiveData로 관리
+        //val userViewModel = UserViewModel(this.UserViewModelFactory).get(main)
+    } // End of setUserData 
 
     fun openFragment(index: Int, key: String, value: Int) {
         moveFragment(index, key, value)
@@ -187,7 +216,6 @@ class MainActivity : AppCompatActivity() {
         parseData(intent)
     }
 
-
     private fun getNFCData(intent: Intent) {
         Toast.makeText(this, "수신 액션 : " + getIntent().action, Toast.LENGTH_SHORT).show()
         val action = intent.action
@@ -230,14 +258,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun userDataSet() {
-        val user = SharedPreferencesUtil(this).getUser()
-
-        // user 정보 viewModel에 저장해서 LiveData로 관리
-        //val userViewModel = UserViewModel(this.UserViewModelFactory).get(main)
-
-
-    }
 
     private fun parseData(intent: Intent) {
         val data = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)!!
