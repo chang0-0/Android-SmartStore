@@ -10,7 +10,7 @@ import androidx.fragment.app.activityViewModels
 import com.ssafy.smartstore.activity.LoginActivity
 import com.ssafy.smartstore.databinding.FragmentJoinBinding
 import com.ssafy.smartstore.dto.User
-import com.ssafy.smartstore.service.UserService
+import com.ssafy.smartstore.util.RetrofitUtil.Companion.userService
 import com.ssafy.smartstore.util.showToastMessage
 import com.ssafy.smartstore.viewModels.LoginViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -22,7 +22,6 @@ private const val TAG = "JoinFragment_싸피"
 
 class JoinFragment : Fragment() {
     lateinit var binding: FragmentJoinBinding
-    lateinit var userService: UserService
     private lateinit var loginActivity: LoginActivity
     private val loginViewModel by activityViewModels<LoginViewModel>()
 
@@ -42,7 +41,6 @@ class JoinFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        userService = UserService()
 
         //id 중복 확인 버튼을 눌렀을 때, Api를 call해서 중복체크를 함.
         // 중복체크를 한 결과를 Boolean값으로 받아와서 loginViewModel의 _isUsedId.value를 갱신해준다.
