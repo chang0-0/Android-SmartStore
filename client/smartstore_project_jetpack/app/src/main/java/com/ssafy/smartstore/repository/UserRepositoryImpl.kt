@@ -26,7 +26,7 @@ class UserRepositoryImpl : UserRepository {
         return RetrofitUtil.userService.insert(user)
     }
 
-    override suspend fun login(user: User): Call<User> {
+    override fun login(user: User): Call<User> {
         return RetrofitUtil.userService.login(user)
     }
 }

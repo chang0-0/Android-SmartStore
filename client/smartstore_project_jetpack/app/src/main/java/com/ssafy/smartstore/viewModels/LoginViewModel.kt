@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ssafy.smartstore.dto.User
 import com.ssafy.smartstore.repository.UserRepositoryImpl
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
@@ -68,8 +69,13 @@ class LoginViewModel : ViewModel() {
     } // End of suspend joinUser
 
     // 로그인
-    suspend fun login(user: User) = viewModelScope.launch {
+    fun login(user: User) {
         val response = UserRepositoryImpl().login(user)
+
+        viewModelScope.launch(Dispatchers.Main) {
+
+
+        }
 
         response.enqueue(object : Callback<User> {
             override fun onResponse(call: Call<User>, response: Response<User>) {
