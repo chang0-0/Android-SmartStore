@@ -24,7 +24,7 @@ class JoinFragment : Fragment() {
     lateinit var binding: FragmentJoinBinding
     lateinit var userService: UserService
     private lateinit var loginActivity: LoginActivity
-    private val loginViewModel: LoginViewModel by activityViewModels()
+    private val loginViewModel by activityViewModels<LoginViewModel>()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -48,8 +48,12 @@ class JoinFragment : Fragment() {
         // 중복체크를 한 결과를 Boolean값으로 받아와서 loginViewModel의 _isUsedId.value를 갱신해준다.
         // 이 값이 갱신되면 observer가 value가 변한것을 감지해서 Toast Message를 띄운다.
         binding.btnConfirm.setOnClickListener {
-            CoroutineScope(Dispatchers.IO).launch {
-                loginViewModel.checkUsedId(binding.editTextJoinID.text.toString())
+            if (binding.editTextJoinID.text.isEmpty()) {
+                requireContext().showToastMessage("아이디를 입력해주세요")
+            } else {
+                CoroutineScope(Dispatchers.IO).launch {
+                    loginViewModel.checkUsedId(binding.editTextJoinID.text.toString())
+                }
             }
         }
 
@@ -57,38 +61,23 @@ class JoinFragment : Fragment() {
 
         // 회원가입 버튼
         binding.btnJoin.setOnClickListener {
-//            val inputId = binding.editTextJoinID.text.toString()
-//            val inputPass = binding.editTextJoinPW.text.toString()
-//            val inputName = binding.editTextJoinName.text.toString()
+            if (emptyEditTextCheck()) {
+                requireContext().showToastMessage("빈 칸이 없어야 합니다.")
+            } else {
+                val user = User().apply {
+                    id = binding.editTextJoinID.text.toString()
+                    pass = binding.editTextJoinPW.text.toString()
+                    name = binding.editTextJoinName.text.toString()
+                }
 
-            val user = User().apply {
-                id = binding.editTextJoinID.text.toString()
-                pass = binding.editTextJoinPW.text.toString()
-                name = binding.editTextJoinName.text.toString()
+                CoroutineScope(Dispatchers.IO).launch {
+                    loginViewModel.joinUser(user)
+                }
+
+                userJoin()
             }
-
-            CoroutineScope(Dispatchers.IO).launch {
-                loginViewModel.joinUser(user)
-            }
-
-            userJoin()
         }
-    }
-
-//    inner class JoinCallback : RetrofitCallback<Boolean> {
-//        override fun onSuccess(code: Int, responseData: Boolean) {
-//            requireContext().showToastMessage("회원가입 되었습니다 환영합니다.")
-//            loginActivity.openFragment(3)
-//        }
-//
-//        override fun onError(t: Throwable) {
-//            Log.d(TAG, t.message ?: "아이디 중복 체크 중 에러가 발생했습니다.")
-//        }
-//
-//        override fun onFailure(code: Int) {
-//            Log.d(TAG, "onResponse: Error Code $code")
-//        }
-//    }
+    } // End of onViewCreated
 
     private fun checkIdShowToastMessage() {
         loginViewModel.isUsedId.observe(viewLifecycleOwner) {
@@ -98,7 +87,7 @@ class JoinFragment : Fragment() {
                 requireContext().showToastMessage("사용 가능한 아이디 입니다.")
             }
         }
-    }
+    } // End of checkIdShowToastMessage
 
     private fun userJoin() {
         if (loginViewModel.isUsedId.value == false) {
@@ -114,26 +103,13 @@ class JoinFragment : Fragment() {
                 requireContext().showToastMessage("회원가입에 실패하였습니다.")
             }
         }
-    }
+    } // End of userJoin
 
+    private fun emptyEditTextCheck(): Boolean {
+        if (binding.editTextJoinID.text.isEmpty() || binding.editTextJoinPW.text.isEmpty() || binding.editTextJoinName.text.isEmpty()) {
+            return false
+        }
 
-//    inner class CheckIdCallback : RetrofitCallback<Boolean> {
-//        override fun onSuccess(code: Int, responseData: Boolean) {
-//            if (responseData) {
-//                requireContext().showToastMessage("이미 사용중인 아이디 입니다.")
-//                checkedId = false
-//            } else {
-//                requireContext().showToastMessage("사용 가능한 아이디 입니다.")
-//                checkedId = true
-//            }
-//        }
-//
-//        override fun onError(t: Throwable) {
-//            Log.d(TAG, t.message ?: "아이디 중복 체크 중 에러가 발생했습니다.")
-//        }
-//
-//        override fun onFailure(code: Int) {
-//            Log.d(TAG, "onResponse: Error Code $code")
-//        }
-//    }
-}
+        return true
+    } // End of emptyEditTextCheck
+} // End of JoinFragment

@@ -25,6 +25,11 @@ class LoginViewModel : ViewModel() {
         get() = _isCompleteJoin
 
 
+    private val _loginCheckUser = MutableLiveData<User>()
+    val loginCheckUser: LiveData<User>
+        get() = _loginCheckUser
+
+
     // 사용자 ID 중복 체크
     suspend fun checkUsedId(userId: String) = viewModelScope.launch {
         val response = UserRepositoryImpl().checkUserId(userId)
@@ -42,22 +47,9 @@ class LoginViewModel : ViewModel() {
             }
         })
 
-        /*
-        if (response.isSuccessful) {
-            withContext(Dispatchers.IO) {
-                if (response.body() != null) {
-                    _isUsedId.value = response.body()
-                }
-            }
-        } else {
-            Log.d(TAG, "checkUsedId: ${response.errorBody()}")
-        }
-         */
-
     } // End of suspend checkUsedId
 
     // 유저 회원가입
-
     suspend fun joinUser(user: User) = viewModelScope.launch {
         val response = UserRepositoryImpl().joinUser(user)
 
@@ -74,4 +66,26 @@ class LoginViewModel : ViewModel() {
             }
         })
     } // End of suspend joinUser
+
+    // 로그인
+    suspend fun login(user: User) = viewModelScope.launch {
+        val response = UserRepositoryImpl().login(user)
+
+        response.enqueue(object : Callback<User> {
+            override fun onResponse(call: Call<User>, response: Response<User>) {
+                if (response.isSuccessful) {
+                    Log.d(TAG, "onResponse: ${response.body()}")
+
+                    _loginCheckUser.value = response.body() as User
+                } else {
+                    Log.d(TAG, "onResponse: ${response.errorBody()}")
+                }
+            }
+
+            override fun onFailure(call: Call<User>, t: Throwable) {
+                Log.d(TAG, "onFailure: $t")
+            }
+        })
+    } // End of login
+
 } // End of LoginViewModel

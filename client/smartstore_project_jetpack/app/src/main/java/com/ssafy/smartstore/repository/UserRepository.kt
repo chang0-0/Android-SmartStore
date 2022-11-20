@@ -21,4 +21,7 @@ interface UserRepository {
     // 회원가입
     suspend fun joinUser(user : User) : Call<Boolean>
 
+    // 로그인
+    suspend fun login(user : User) : Call<User>
+
 }

@@ -9,6 +9,7 @@ import retrofit2.Call
 import retrofit2.Response
 
 private const val TAG = "UserRepositoryImpl_싸피"
+
 class UserRepositoryImpl : UserRepository {
     private val userApi = ApplicationClass.retrofit.create(UserApi::class.java)
 
@@ -23,5 +24,9 @@ class UserRepositoryImpl : UserRepository {
 
     override suspend fun joinUser(user: User): Call<Boolean> {
         return RetrofitUtil.userService.insert(user)
+    }
+
+    override suspend fun login(user: User): Call<User> {
+        return RetrofitUtil.userService.login(user)
     }
 }

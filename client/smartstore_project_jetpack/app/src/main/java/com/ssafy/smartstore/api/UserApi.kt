@@ -1,6 +1,5 @@
 package com.ssafy.smartstore.api
 
-import com.google.gson.JsonPrimitive
 import com.ssafy.smartstore.dto.User
 import com.ssafy.smartstore.response.UserInfoResponse
 import retrofit2.Call
