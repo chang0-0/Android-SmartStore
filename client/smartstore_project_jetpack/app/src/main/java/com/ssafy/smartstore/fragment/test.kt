@@ -1,43 +1,32 @@
-package com.ssafy.smartstore.fragment
-
 import kotlinx.coroutines.*
 
 fun main() {
-
-    CoroutineScope(Dispatchers.Default).launch {
-        delay(200L)
-        println("1")
-    }
-
-    CoroutineScope(Dispatchers.Default).launch {
-        coroutineScope {
-            delay(500L)
-            println("2")
-        }
-        delay(100L)
-        println("3")
-    }
-
-    println("4")
+    works()
+    readLine()
 }
 
-fun test() {
+private fun works(){
+    val one = GlobalScope.async {
+        goSchool()
+    }
+    val two = GlobalScope.async {
+        goHome()
+    }
 
-    CoroutineScope(Dispatchers.Default).launch {
-        coroutineScope {
-            delay(200L)
-            println("1")
-        }
+    GlobalScope.launch{
+        val combined = one.await() + " " + two.await()
+        println("Combined : $combined")
+    }
 
-        coroutineScope {
-            coroutineScope {
-                delay(500L)
-                println("2")
-            }
-            delay(100L)
-            println("3")
-        }
 
-        println("4")
-    }.job
+}
+
+suspend fun goSchool(): String{
+    delay(3000)
+    return "arrive school"
+}
+
+suspend fun goHome(): String{
+    delay(1000)
+    return "arrive Home"
 }

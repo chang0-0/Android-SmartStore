@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.ssafy.smartstore.activity.LoginActivity
@@ -15,6 +16,7 @@ import com.ssafy.smartstore.databinding.FragmentLoginBinding
 import com.ssafy.smartstore.dto.User
 import com.ssafy.smartstore.util.showToastMessage
 import com.ssafy.smartstore.viewModels.LoginViewModel
+import kotlinx.coroutines.*
 
 
 // 로그인 화면
@@ -44,10 +46,13 @@ class LoginFragment : Fragment() {
         binding.btnLogin.setOnClickListener {
             if (binding.editTextLoginID.text.isNotEmpty() && binding.editTextLoginPW.text.isNotEmpty()) {
 
-                login(
-                    binding.editTextLoginID.text.toString(),
-                    binding.editTextLoginPW.text.toString()
-                )
+                val scope = CoroutineScope(Dispatchers.Main).launch {
+                    login(
+                        binding.editTextLoginID.text.toString(),
+                        binding.editTextLoginPW.text.toString()
+                    )
+                }
+
 
 //                CoroutineScope(Dispatchers.IO).launch {
 //                    login(
@@ -68,30 +73,19 @@ class LoginFragment : Fragment() {
     } // End of onViewCreated
 
     // Login API Call
-    private fun login(loginId: String, loginPass: String) {
+    private suspend fun login(loginId: String, loginPass: String) {
         val user = User(loginId, loginPass)
 
-        loginViewModel.login(user)
-        Log.d(TAG, "LoginFragment 의 login 밖으로 빠져나옴: ")
+        CoroutineScope(Dispatchers.IO).launch {
+            Log.d(TAG, "f1 시작")
+            loginViewModel.login(user)
+            Log.d(TAG, "f1 끝")
+            delay(100L)
 
-//        val job = CoroutineScope(Dispatchers.IO).async {
-//            loginViewModel.login(user)
-//            //delay(100L)
-//        }
-
-        //job.await()
-        // job.join()
-        // job.join()을 통해서 작업이 끝날 때까지 대기한 후 작업이 모두 끝나고 나면, 다음 작업을 실행한다.
-
-        Log.d(TAG, "loginViewModel.loginCheckUser.value : ")
-        if (loginViewModel.loginCheckUser.value == null) {
-            requireContext().showToastMessage("ID 또는 패스워드를 확인해 주세요.")
-        } else {
-            requireContext().showToastMessage("로그인 되었습니다.")
-            ApplicationClass.sharedPreferencesUtil.addUser(loginViewModel.loginCheckUser.value!!)
-            loginActivity.openFragment(1)
+            withContext(Dispatchers.Main) {
+                loginSuccessCheck()
+            }
         }
-
 
 //        withContext(Dispatchers.Main) {
 //            if (loginViewModel.loginCheckUser.value == null) {
@@ -104,5 +98,17 @@ class LoginFragment : Fragment() {
 //        }
 
     } // End of login
+
+    private fun loginSuccessCheck() {
+        Log.d(TAG, "loginViewModel.loginCheckUser.value : ")
+        if (loginViewModel.loginCheckUser.value == null) {
+            requireContext().showToastMessage("ID 또는 패스워드를 확인해 주세요.")
+        } else {
+            requireContext().showToastMessage("로그인 되었습니다.")
+            ApplicationClass.sharedPreferencesUtil.addUser(loginViewModel.loginCheckUser.value!!)
+            loginActivity.openFragment(1)
+        }
+    }
+    
 } // End of LoginFragment class
 
