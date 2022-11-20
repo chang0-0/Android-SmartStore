@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ssafy.smartstore.activity.MainActivity
@@ -17,6 +18,7 @@ import com.ssafy.smartstore.dto.Product
 import com.ssafy.smartstore.dto.User
 import com.ssafy.smartstore.service.ProductService
 import com.ssafy.smartstore.util.RetrofitCallback
+import com.ssafy.smartstore.viewModels.OrderViewModel
 
 // 하단 주문 탭
 private const val TAG = "OrderFragment_싸피"
@@ -25,10 +27,17 @@ class OrderFragment : Fragment() {
     private lateinit var menuAdapter: MenuAdapter
     private lateinit var mainActivity: MainActivity
     private lateinit var binding: FragmentOrderBinding
+    private val viewModel: OrderViewModel by activityViewModels()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mainActivity = context as MainActivity
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // MapFragment 에 들어갔다 나와야 표시됨, 추후 처리 필요
+//        binding.dist.text = "매장과의 거리가 ${viewModel.distance}m 입니다."
     }
 
     override fun onCreateView(
