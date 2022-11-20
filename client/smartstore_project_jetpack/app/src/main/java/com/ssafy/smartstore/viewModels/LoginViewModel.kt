@@ -70,13 +70,8 @@ class LoginViewModel : ViewModel() {
 
     // 로그인
     fun login(user: User) {
+
         val response = UserRepositoryImpl().login(user)
-
-        viewModelScope.launch(Dispatchers.Main) {
-
-
-        }
-
         response.enqueue(object : Callback<User> {
             override fun onResponse(call: Call<User>, response: Response<User>) {
                 if (response.isSuccessful) {
@@ -92,6 +87,7 @@ class LoginViewModel : ViewModel() {
                 Log.d(TAG, "onFailure: $t")
             }
         })
-    } // End of login
 
+        Log.d(TAG, "logindViewModel 의 Login 메소드 끝: ")
+    } // End of login
 } // End of LoginViewModel
