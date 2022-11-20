@@ -25,6 +25,10 @@
         android:theme="@style/Theme.SmartstoreUI"
         android:usesCleartextTraffic="true">
 
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/api_key" />
+
         <activity android:name="com.ssafy.smartstore.activity.LoginActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" android:exported="true">

@@ -86,4 +86,12 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1'
     //framework ktx dependency 추가
     implementation "androidx.fragment:fragment-ktx:1.4.1"
+
+    //   구글 map api 사용
+    implementation 'com.google.android.gms:play-services-maps:18.0.2'
+    implementation 'com.google.android.gms:play-services-location:20.0.0'
+
+    // TedPermission
+    implementation 'io.github.ParkSangGwon:tedpermission-normal:3.3.0'
+
 }

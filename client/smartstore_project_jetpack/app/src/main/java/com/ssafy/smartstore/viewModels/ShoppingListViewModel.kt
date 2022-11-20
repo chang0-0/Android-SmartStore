@@ -17,7 +17,21 @@ class ShoppingListViewModel(private val repository: StoreRepository) : ViewModel
     }
 
     fun shoppingListInsert(orderDetail: OrderDetail) {
-        list.add(orderDetail)
+        var isAlreadyInserted = false
+
+        for(i: Int in 0 until list.size) {
+            // 이미 장바구니에 담긴 상품이라면 해당 상품의 개수 증가
+            if(list[i].productId == orderDetail.productId) {
+                list[i].quantity += orderDetail.quantity
+                isAlreadyInserted = true
+                break
+            }
+        }
+        // 장바구니에 없던 상품이라면 리스트에 추가
+        if(!isAlreadyInserted) {
+            list.add(orderDetail)
+        }
+
         _shoppingList.value = list
     }
 

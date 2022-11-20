@@ -119,12 +119,13 @@ class ShoppingListFragment(val orderId : Int) : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         mainActivity.hideBottomNav(false)
+
+        // 최근 주문에서 클릭해서 장바구니로 넘어온 경우 뒤로가기 시 장바구니 초기화
+        if(orderId != 0) shoppingListViewModel.shoppingListClear()
     }
 
     fun shoppingListDelete(orderDetail: OrderDetail) {
-        Log.d(TAG, "shoppingListDelete: list : shoppingList1 : ${shoppingListViewModel.shoppingList.value}")
         shoppingListViewModel.shoppingListDelete(orderDetail)
-        Log.d(TAG, "shoppingListDelete: list : shoppingList2 : ${shoppingListViewModel.shoppingList.value}")
     }
 
 
