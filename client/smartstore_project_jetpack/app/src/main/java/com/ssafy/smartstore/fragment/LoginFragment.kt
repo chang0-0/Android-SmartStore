@@ -13,6 +13,7 @@ import com.ssafy.smartstore.activity.LoginActivity
 import com.ssafy.smartstore.config.ApplicationClass
 import com.ssafy.smartstore.databinding.FragmentLoginBinding
 import com.ssafy.smartstore.dto.User
+import com.ssafy.smartstore.util.showSnackBarMessage
 import com.ssafy.smartstore.util.showToastMessage
 import com.ssafy.smartstore.viewModels.LoginViewModel
 import kotlinx.coroutines.*
@@ -43,15 +44,13 @@ class LoginFragment : Fragment() {
 
         // 로그인 버튼 클릭
         binding.btnLogin.setOnClickListener {
-            if (binding.editTextLoginID.text.isNotEmpty() && binding.editTextLoginPW.text.isNotEmpty()) {
-
+            if (binding.editTextLoginID.text!!.isNotEmpty() && binding.editTextLoginPW.text!!.isNotEmpty()) {
                 login(
                     binding.editTextLoginID.text.toString(),
                     binding.editTextLoginPW.text.toString()
                 )
-
             } else {
-                requireContext().showToastMessage("ID 또는 패스워드를 확인해 주세요.")
+                view.showSnackBarMessage("ID 또는 패스워드를 확인해 주세요.")
             }
         }
 
@@ -88,7 +87,7 @@ class LoginFragment : Fragment() {
             Log.d(TAG, "observeLogin 여기가 몇 번 동작할까요? ")
 
             if (loginViewModel.loginCheckUser.value!!.id != binding.editTextLoginID.text.toString() || loginViewModel.loginCheckUser.value!!.pass != binding.editTextLoginPW.text.toString()) {
-                requireContext().showToastMessage("ID 또는 패스워드를 확인해 주세요.")
+                view!!.showSnackBarMessage("ID 또는 패스워드를 확인해 주세요.")
             } else {
                 requireContext().showToastMessage("로그인 되었습니다.")
                 ApplicationClass.sharedPreferencesUtil.addUser(loginViewModel.loginCheckUser.value!!)
