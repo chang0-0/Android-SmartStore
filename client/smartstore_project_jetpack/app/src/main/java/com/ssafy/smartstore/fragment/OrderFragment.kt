@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ssafy.smartstore.activity.MainActivity
@@ -15,9 +16,9 @@ import com.ssafy.smartstore.adapter.AdapterItemClickListener
 import com.ssafy.smartstore.adapter.MenuAdapter
 import com.ssafy.smartstore.databinding.FragmentOrderBinding
 import com.ssafy.smartstore.dto.Product
-import com.ssafy.smartstore.service.ProductService
 import com.ssafy.smartstore.util.RetrofitCallback
 import com.ssafy.smartstore.viewModels.MapViewModel
+import com.ssafy.smartstore.viewModels.ProductViewModel
 
 // 하단 주문 탭
 private const val TAG = "OrderFragment_싸피"
@@ -26,7 +27,8 @@ class OrderFragment : Fragment() {
     private lateinit var menuAdapter: MenuAdapter
     private lateinit var mainActivity: MainActivity
     private lateinit var binding: FragmentOrderBinding
-    private val viewModel: MapViewModel by activityViewModels()
+    private val productViewModel by lazy { ViewModelProvider(mainActivity, ProductViewModel.Factory(mainActivity.application))[ProductViewModel::class.java]}
+    private lateinit var list: List<Product>
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -64,7 +66,25 @@ class OrderFragment : Fragment() {
     }
 
     private fun initData() {
-        ProductService().getProductList(ProductCallback())
+        productViewModel.getProductList()
+        productViewModel.productList.observe(viewLifecycleOwner) {
+            list = it
+            menuAdapter = MenuAdapter(list)
+            menuAdapter.setItemClickListener(object : AdapterItemClickListener {
+                override fun onClick(view: View, position: Int, productId: Any?) {
+                    mainActivity.openFragment(3, "productId", productId as Int)
+                }
+            })
+
+            binding.recyclerViewMenu.apply {
+                layoutManager = GridLayoutManager(context, 3)
+                adapter = menuAdapter
+                //원래의 목록위치로 돌아오게함
+                adapter!!.stateRestorationPolicy =
+                    RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
+            }
+        }
+
     }
 
     inner class ProductCallback : RetrofitCallback<List<Product>> {

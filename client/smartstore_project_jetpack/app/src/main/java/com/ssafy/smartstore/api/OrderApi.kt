@@ -10,7 +10,7 @@ import retrofit2.http.*
 interface OrderApi {
     // order 객체를 저장하고 추가된 Order의 id를 반환한다.
     @POST("rest/order")
-    fun makeOrder(@Body body: Order): Call<Int>
+    suspend fun makeOrder(@Body body: Order): Response<Int>
 
     @GET("rest/order/{orderId}")
     suspend fun getOrderDetail(@Path("orderId") orderId: Int): Response<List<OrderDetailResponse>>

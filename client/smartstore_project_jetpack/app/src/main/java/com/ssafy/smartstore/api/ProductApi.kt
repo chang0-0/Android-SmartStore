@@ -10,7 +10,7 @@ import retrofit2.http.Path
 interface ProductApi {
     // 전체 상품의 목록을 반환한다
     @GET("rest/product")
-    fun getProductList(): Call<List<Product>>
+    suspend fun getProductList(): Response<List<Product>>
 
     // {productId}에 해당하는 상품의 정보를 comment와 함께 반환한다.
     // comment 조회시 사용

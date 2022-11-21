@@ -3,6 +3,8 @@ package com.ssafy.smartstore.repository
 import android.app.Application
 import com.google.gson.JsonPrimitive
 import com.ssafy.smartstore.dto.Comment
+import com.ssafy.smartstore.dto.Order
+import com.ssafy.smartstore.dto.Product
 import com.ssafy.smartstore.response.LatestOrderResponse
 import com.ssafy.smartstore.response.MenuDetailWithCommentResponse
 import com.ssafy.smartstore.response.OrderDetailResponse
@@ -33,6 +35,14 @@ class StoreRepository(application: Application) {
 
     suspend fun getLastMonthOrder(userId: String): Response<List<LatestOrderResponse>> {
         return RetrofitUtil.orderService.getLastMonthOrder(userId)
+    }
+
+    suspend fun getProductList(): Response<List<Product>>{
+        return RetrofitUtil.productService.getProductList()
+    }
+
+    suspend fun makeOrder(order: Order): Response<Int> {
+        return RetrofitUtil.orderService.makeOrder(order)
     }
 
     companion object {

@@ -21,10 +21,10 @@ import com.ssafy.smartstore.adapter.ShoppingListAdapter
 import com.ssafy.smartstore.config.ApplicationClass
 import com.ssafy.smartstore.dto.Order
 import com.ssafy.smartstore.dto.OrderDetail
-import com.ssafy.smartstore.service.OrderService
 import com.ssafy.smartstore.util.RetrofitCallback
 import com.ssafy.smartstore.util.showToastMessage
 import com.ssafy.smartstore.viewModels.MainViewModel
+import com.ssafy.smartstore.viewModels.OrderViewModel
 import com.ssafy.smartstore.viewModels.ShoppingListViewModel
 
 private const val TAG = "ShoppingListFragment_싸피"
@@ -40,6 +40,7 @@ class ShoppingListFragment(val orderId : Int) : Fragment() {
     private lateinit var txtShoppingCount: TextView
     private lateinit var txtShoppingMoney: TextView
     private val shoppingListViewModel by lazy { ViewModelProvider(mainActivity, ShoppingListViewModel.Factory(mainActivity.application))[ShoppingListViewModel::class.java]}
+    private val orderViewModel by lazy { ViewModelProvider(this, OrderViewModel.Factory(mainActivity.application, ApplicationClass.sharedPreferencesUtil.getUser().id))[OrderViewModel::class.java]}
     private val activityViewModel by activityViewModels<MainViewModel>()
     private var isShop: Boolean = true
 
@@ -206,7 +207,7 @@ class ShoppingListFragment(val orderId : Int) : Fragment() {
     }
 
     private fun makeOrder(order: Order) {
-        OrderService().makeOrder(order, OrderCallback())
+        orderViewModel.makeOrder(order)
     }
 
     inner class OrderCallback : RetrofitCallback<Int> {

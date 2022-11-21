@@ -1,11 +1,10 @@
 package com.ssafy.smartstore.viewModels
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.*
+import com.ssafy.smartstore.dto.Order
 import com.ssafy.smartstore.repository.StoreRepository
 import com.ssafy.smartstore.response.LatestOrderResponse
-import com.ssafy.smartstore.response.OrderDetailResponse
 import kotlinx.coroutines.launch
 
 private const val TAG = "OrderViewModel_싸피"
@@ -14,9 +13,17 @@ class OrderViewModel(private val repository: StoreRepository, userId: String) : 
     val lastMonthOrderList : LiveData<List<LatestOrderResponse>>
         get() = _lastMonthOrderList
 
+    var orderId = -1
+
     init {
-        Log.d(TAG, "init: ")
         getLatesetOrderList(userId)
+    }
+
+    fun makeOrder(order: Order) = viewModelScope.launch {
+        val response = repository.makeOrder(order)
+        if(response.isSuccessful) {
+            orderId = response.body()!!
+        }
     }
 
     fun getLatesetOrderList(userId: String) = viewModelScope.launch {
@@ -25,6 +32,7 @@ class OrderViewModel(private val repository: StoreRepository, userId: String) : 
             _lastMonthOrderList.value = makeLatestOrderList(response.body()!!)
         }
     }
+
     private fun makeLatestOrderList(latestOrderList: List<LatestOrderResponse>): List<LatestOrderResponse> {
         val hm = HashMap<Int, LatestOrderResponse>()
         latestOrderList.forEach { order ->

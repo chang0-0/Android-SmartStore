@@ -17,7 +17,6 @@ import com.ssafy.smartstore.adapter.NoticeAdapter
 import com.ssafy.smartstore.config.ApplicationClass
 import com.ssafy.smartstore.databinding.FragmentHomeBinding
 import com.ssafy.smartstore.response.LatestOrderResponse
-import com.ssafy.smartstore.service.OrderService
 import com.ssafy.smartstore.viewModels.OrderViewModel
 import com.ssafy.smartstore.viewModels.ShoppingListViewModel
 
