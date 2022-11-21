@@ -48,9 +48,14 @@ class HomeFragment : Fragment() {
         return binding.root
     }
 
+    override fun onResume() {
+        super.onResume()
+        Log.d(TAG, "onResume: ")
+    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        Log.d(TAG, "onViewCreated: ")
+        orderViewModel.getLatesetOrderList(userId)
         initData(ApplicationClass.sharedPreferencesUtil.getUser().id)
         initUserName()
         initAdapter()

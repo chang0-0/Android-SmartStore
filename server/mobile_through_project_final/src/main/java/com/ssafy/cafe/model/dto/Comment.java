@@ -29,5 +29,38 @@ public class Comment {
         this.rating = rating;
         this.comment = comment;
     }
+    public Comment() {
+        super();
+    }
+    public Integer getId() {
+        return id;
+    }
+    public void setId(Integer id) {
+        this.id = id;
+    }
+    public String getUserId() {
+        return userId;
+    }
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+    public Integer getProductId() {
+        return productId;
+    }
+    public void setProductId(Integer productId) {
+        this.productId = productId;
+    }
+    public Double getRating() {
+        return rating;
+    }
+    public void setRating(Double rating) {
+        this.rating = rating;
+    }
+    public String getComment() {
+        return comment;
+    }
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
     
 }

@@ -16,6 +16,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.ssafy.smartstore.R
 import com.ssafy.smartstore.api.UserApi
@@ -44,8 +45,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var userRepository: UserRepository
 
     //private lateinit var userViewModel: UserViewModel
-    private val userViewModel: UserViewModel by viewModels()
-
+//    private val userViewModel: UserViewModel by viewModels()
+    private val userViewModel by lazy { ViewModelProvider(this, UserViewModel.Factory(this.application, ApplicationClass.sharedPreferencesUtil.getUser().id))[UserViewModel::class.java] }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)

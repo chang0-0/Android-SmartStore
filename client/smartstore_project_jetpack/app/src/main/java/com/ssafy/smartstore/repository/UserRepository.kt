@@ -1,27 +1,58 @@
 package com.ssafy.smartstore.repository
 
-import com.google.gson.JsonPrimitive
+import android.app.Application
+import android.util.Log
+import com.ssafy.smartstore.api.UserApi
+import com.ssafy.smartstore.config.ApplicationClass
 import com.ssafy.smartstore.dto.User
 import com.ssafy.smartstore.response.UserInfoResponse
+import com.ssafy.smartstore.util.RetrofitUtil
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Response
 
-private const val TAG = "UserRepository_싸피"
+private const val TAG = "UserRepositoryImpl_싸피"
 
-interface UserRepository {
-    // 사용자 데이터 repository
-    // DB조회 하는 부분을 LiveData로 바꾸면 동일하게 자동 갱신할 수 있다.
+class UserRepository() {
+    private val userApi = ApplicationClass.retrofit.create(UserApi::class.java)
 
-    // user데이터 가져오기
-    suspend fun getUserData(userId: String): Response<UserInfoResponse>
+    suspend fun getUserData(userId: String): Response<UserInfoResponse> {
+        //return userApi.getInfo(userId) 아래와 같은 코드
+        return RetrofitUtil.userService.getInfo(userId)
+    }
 
-    // ID 중복체크
-    suspend fun checkUserId(userId: String): Call<Boolean>
+    suspend fun checkUserId(userId: String): Call<Boolean> {
+        return RetrofitUtil.userService.isUsedId(userId)
+    }
 
-    // 회원가입
-    suspend fun joinUser(user: User): Call<Boolean>
+    suspend fun joinUser(user: User): Call<Boolean> {
+        return RetrofitUtil.userService.insert(user)
+    }
 
-    // 로그인
-    suspend fun login(user: User): User
+    suspend fun login(user: User): User {
+        var result = User()
 
+        withContext(Dispatchers.IO) {
+            try {
+                result = RetrofitUtil.userService.login(user)
+                Log.d(TAG, "login: ${result}")
+            } catch (e: Exception) {
+                Log.d(TAG, "login: ")
+            }
+        }
+
+        return result
+    }
+
+    companion object {
+        private var instance: UserRepository? = null
+
+        fun getInstance(application: Application): UserRepository? {
+            if (instance == null) instance = UserRepository()
+            return instance
+        }
+    }
 }

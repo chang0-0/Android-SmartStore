@@ -1,4 +1,4 @@
-package com.ssafy.cafe.model.service;
+    package com.ssafy.cafe.model.service;
 
 import java.util.List;
 import java.util.Map;
@@ -46,10 +46,13 @@ public class OrderServiceImpl implements OrderService {
             quantitySum += detail.getQuantity();
         }
         // 스템프 정보 저장
-        Stamp stamp = Stamp.builder().userId(order.getUserId()).quantity(quantitySum).orderId(order.getId()).build();
+//        Stamp stamp = Stamp.builder().userId(order.getUserId()).quantity(quantitySum).orderId(order.getId()).build();
+        Stamp stamp = new Stamp(order.getUserId(), order.getId(), quantitySum);
         sDao.insert(stamp);
         // 사용자 정보 업데이트
-        User user = User.builder().id(order.getUserId()).stamps(stamp.getQuantity()).build();
+//        User user = User.builder().id(order.getUserId()).stamps(stamp.getQuantity()).build();
+        
+        User user = new User(order.getUserId(), stamp.getQuantity());
         uDao.updateStamp(user);
 
     }

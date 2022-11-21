@@ -1,12 +1,14 @@
 package com.ssafy.smartstore.viewModels
 
+import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ssafy.smartstore.config.ApplicationClass
 import com.ssafy.smartstore.dto.User
-import com.ssafy.smartstore.repository.UserRepositoryImpl
+import com.ssafy.smartstore.repository.UserRepository
 import com.ssafy.smartstore.util.RetrofitUtil
 import kotlinx.coroutines.*
 import retrofit2.Call
@@ -34,7 +36,7 @@ class LoginViewModel : ViewModel() {
 
     // 사용자 ID 중복 체크
     suspend fun checkUsedId(userId: String) = viewModelScope.launch {
-        val response = UserRepositoryImpl().checkUserId(userId)
+        val response = UserRepository().checkUserId(userId)
 
         response.enqueue(object : Callback<Boolean> {
             override fun onResponse(call: Call<Boolean>, response: Response<Boolean>) {
@@ -53,7 +55,7 @@ class LoginViewModel : ViewModel() {
 
     // 유저 회원가입
     suspend fun joinUser(user: User) = viewModelScope.launch {
-        val response = UserRepositoryImpl().joinUser(user)
+        val response = UserRepository().joinUser(user)
 
         response.enqueue(object : Callback<Boolean> {
             override fun onResponse(call: Call<Boolean>, response: Response<Boolean>) {
@@ -72,7 +74,7 @@ class LoginViewModel : ViewModel() {
     // 로그인
     fun login(user: User) {
         val job1 = viewModelScope.async {
-            UserRepositoryImpl().login(user)
+            UserRepository().login(user)
         }
 
         viewModelScope.launch {

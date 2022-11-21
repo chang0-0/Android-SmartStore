@@ -82,12 +82,12 @@ class ShoppingListFragment(val orderId : Int) : Fragment() {
 
         // viewModel 관찰
         shoppingListViewModel.shoppingList.observe(mainActivity) {
+            moneyAndCountRefresh(shoppingListViewModel.shoppingList.value!!)
             shoppingListViewModel.shoppingList.value?.let {
                 shoppingListAdapter.setData(it)
                 shoppingListAdapter.notifyDataSetChanged()
                 shoppingListRecyclerView.adapter = shoppingListAdapter
             }
-            moneyAndCountRefresh(shoppingListViewModel.shoppingList.value!!)
         }
 
         btnShop.setOnClickListener {

@@ -31,4 +31,55 @@ public class User {
         this.name = name;
         this.pass = pass;
     }
+
+    public User() {
+        // TODO Auto-generated constructor stub
+    }
+
+    public User(String userId, Integer quantity) {
+        super();
+        this.id = userId;
+        this.stamps = quantity;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getPass() {
+        return pass;
+    }
+
+    public void setPass(String pass) {
+        this.pass = pass;
+    }
+
+    public Integer getStamps() {
+        return stamps;
+    }
+
+    public void setStamps(Integer stamps) {
+        this.stamps = stamps;
+    }
+
+    public List<Stamp> getStampList() {
+        return stampList;
+    }
+
+    public void setStampList(List<Stamp> stampList) {
+        this.stampList = stampList;
+    }
+    
 }
