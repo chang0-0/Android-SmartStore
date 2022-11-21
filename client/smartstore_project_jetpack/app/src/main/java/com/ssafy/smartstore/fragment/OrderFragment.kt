@@ -15,10 +15,9 @@ import com.ssafy.smartstore.adapter.AdapterItemClickListener
 import com.ssafy.smartstore.adapter.MenuAdapter
 import com.ssafy.smartstore.databinding.FragmentOrderBinding
 import com.ssafy.smartstore.dto.Product
-import com.ssafy.smartstore.dto.User
 import com.ssafy.smartstore.service.ProductService
 import com.ssafy.smartstore.util.RetrofitCallback
-import com.ssafy.smartstore.viewModels.OrderViewModel
+import com.ssafy.smartstore.viewModels.MapViewModel
 
 // 하단 주문 탭
 private const val TAG = "OrderFragment_싸피"
@@ -27,7 +26,7 @@ class OrderFragment : Fragment() {
     private lateinit var menuAdapter: MenuAdapter
     private lateinit var mainActivity: MainActivity
     private lateinit var binding: FragmentOrderBinding
-    private val viewModel: OrderViewModel by activityViewModels()
+    private val viewModel: MapViewModel by activityViewModels()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)

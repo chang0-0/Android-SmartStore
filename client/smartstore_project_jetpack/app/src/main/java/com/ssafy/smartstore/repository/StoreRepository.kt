@@ -3,6 +3,7 @@ package com.ssafy.smartstore.repository
 import android.app.Application
 import com.google.gson.JsonPrimitive
 import com.ssafy.smartstore.dto.Comment
+import com.ssafy.smartstore.response.LatestOrderResponse
 import com.ssafy.smartstore.response.MenuDetailWithCommentResponse
 import com.ssafy.smartstore.response.OrderDetailResponse
 import com.ssafy.smartstore.util.RetrofitUtil
@@ -26,8 +27,12 @@ class StoreRepository(application: Application) {
         return RetrofitUtil.commentService.delete(comment.id)
     }
 
-    suspend fun getOrderInfo(orderId: Int): Response<List<OrderDetailResponse>> {
-        return RetrofitUtil.orderService.getOrderInfo(orderId)
+    suspend fun getOrderDetail(orderId: Int): Response<List<OrderDetailResponse>> {
+        return RetrofitUtil.orderService.getOrderDetail(orderId)
+    }
+
+    suspend fun getLastMonthOrder(userId: String): Response<List<LatestOrderResponse>> {
+        return RetrofitUtil.orderService.getLastMonthOrder(userId)
     }
 
     companion object {

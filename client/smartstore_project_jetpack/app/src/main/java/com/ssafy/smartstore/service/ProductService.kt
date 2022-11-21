@@ -1,7 +1,6 @@
 package com.ssafy.smartstore.service
 
 import com.ssafy.smartstore.dto.Product
-import com.ssafy.smartstore.response.MenuDetailWithCommentResponse
 import com.ssafy.smartstore.util.RetrofitCallback
 import com.ssafy.smartstore.util.RetrofitUtil
 import retrofit2.Call
@@ -30,31 +29,4 @@ class ProductService {
             }
         })
     }
-
-    /*
-        view model로 이전됨
-     */
-//    fun getProductWithComments(productId: Int, callback: RetrofitCallback<List<MenuDetailWithCommentResponse>>) {
-//        val menuInfoRequest: Call<List<MenuDetailWithCommentResponse>> = RetrofitUtil.productService.getProductWithComments(productId)
-//
-//        menuInfoRequest.enqueue(object : Callback<List<MenuDetailWithCommentResponse>> {
-//            override fun onResponse(call: Call<List<MenuDetailWithCommentResponse>>, response: Response<List<MenuDetailWithCommentResponse>>) {
-//                val res = response.body()
-//                if(response.code() == 200){
-//                    if (res != null) {
-//                        callback.onSuccess(response.code(), res)
-//                    }
-//                } else {
-//                    callback.onFailure(response.code())
-//                }
-//            }
-//
-//            override fun onFailure(call: Call<List<MenuDetailWithCommentResponse>>, t: Throwable) {
-//                callback.onError(t)
-//            }
-//        })
-//
-//    }
-
-
 }

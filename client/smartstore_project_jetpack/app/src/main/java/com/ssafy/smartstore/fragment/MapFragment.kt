@@ -34,7 +34,7 @@ import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.normal.TedPermission
 import com.ssafy.smartstore.activity.MainActivity
 import com.ssafy.smartstore.databinding.FragmentMapBinding
-import com.ssafy.smartstore.viewModels.OrderViewModel
+import com.ssafy.smartstore.viewModels.MapViewModel
 import java.io.IOException
 import com.ssafy.smartstore.R
 import java.util.*
@@ -55,7 +55,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     private val lat:Double = 36.1009585
     private val long:Double = 128.4229464
     private val tel:String = "tel:01012345678"
-    private val viewModel: OrderViewModel by activityViewModels()
+    private val viewModel: MapViewModel by activityViewModels()
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mainActivity = context as MainActivity

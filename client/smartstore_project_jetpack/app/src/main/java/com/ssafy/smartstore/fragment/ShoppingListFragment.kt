@@ -83,13 +83,12 @@ class ShoppingListFragment(val orderId : Int) : Fragment() {
         // viewModel 관찰
         shoppingListViewModel.shoppingList.observe(mainActivity) {
             shoppingListViewModel.shoppingList.value?.let {
-                Log.d(TAG, "onViewCreated: 변경됨!!!!!! ${shoppingListViewModel.shoppingList.value}")
                 shoppingListAdapter.setData(it)
                 shoppingListAdapter.notifyDataSetChanged()
                 shoppingListRecyclerView.adapter = shoppingListAdapter
             }
+            moneyAndCountRefresh(shoppingListViewModel.shoppingList.value!!)
         }
-        moneyAndCountRefresh(shoppingListViewModel.shoppingList.value!!)
 
         btnShop.setOnClickListener {
             btnShop.background =

@@ -18,6 +18,7 @@ import com.ssafy.smartstore.config.ApplicationClass
 import com.ssafy.smartstore.databinding.FragmentHomeBinding
 import com.ssafy.smartstore.response.LatestOrderResponse
 import com.ssafy.smartstore.service.OrderService
+import com.ssafy.smartstore.viewModels.OrderViewModel
 import com.ssafy.smartstore.viewModels.ShoppingListViewModel
 
 // Home 탭
@@ -25,14 +26,17 @@ private const val TAG = "HomeFragment_싸피"
 
 class HomeFragment : Fragment() {
     private val shoppingListViewModel by lazy { ViewModelProvider(mainActivity, ShoppingListViewModel.Factory(mainActivity.application))[ShoppingListViewModel::class.java]}
+    private val orderViewModel by lazy { ViewModelProvider(this, OrderViewModel.Factory(mainActivity.application, userId))[OrderViewModel::class.java]}
     private lateinit var latestOrderAdapter: LatestOrderAdapter
     private var noticeAdapter: NoticeAdapter = NoticeAdapter()
     private lateinit var mainActivity: MainActivity
     private lateinit var list: List<LatestOrderResponse>
     private lateinit var binding: FragmentHomeBinding
+    private var userId = ""
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mainActivity = context as MainActivity
+        userId = ApplicationClass.sharedPreferencesUtil.getUser().id
     }
 
     override fun onCreateView(
@@ -53,7 +57,7 @@ class HomeFragment : Fragment() {
     }
 
     fun initData(id: String) {
-        val userLastOrderLiveData = OrderService().getLastMonthOrder(id)
+        val userLastOrderLiveData = orderViewModel.lastMonthOrderList
         userLastOrderLiveData.observe(viewLifecycleOwner) {
             list = it
             latestOrderAdapter = LatestOrderAdapter(requireContext(), list)

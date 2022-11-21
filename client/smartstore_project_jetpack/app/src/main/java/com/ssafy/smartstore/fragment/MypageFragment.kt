@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ssafy.smartstore.activity.MainActivity
 import com.ssafy.smartstore.adapter.AdapterItemClickListener
+import com.ssafy.smartstore.adapter.LatestOrderAdapter
 import com.ssafy.smartstore.adapter.OrderAdapter
 import com.ssafy.smartstore.api.UserApi
 import com.ssafy.smartstore.config.ApplicationClass
@@ -23,6 +24,7 @@ import com.ssafy.smartstore.databinding.FragmentMypageBinding
 import com.ssafy.smartstore.dto.User
 import com.ssafy.smartstore.response.LatestOrderResponse
 import com.ssafy.smartstore.service.OrderService
+import com.ssafy.smartstore.viewModels.OrderViewModel
 import com.ssafy.smartstore.viewModels.UserViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -33,11 +35,12 @@ private const val TAG = "MypageFragment_싸피"
 
 
 class MypageFragment : Fragment() {
-    private lateinit var orderAdapter: OrderAdapter
+    private lateinit var orderAdapter: LatestOrderAdapter
     private lateinit var mainActivity: MainActivity
     private lateinit var list: List<LatestOrderResponse>
     private lateinit var user: User
     private lateinit var userViewModel: UserViewModel
+    private val orderViewModel by lazy { ViewModelProvider(this, OrderViewModel.Factory(mainActivity.application, user.id))[OrderViewModel::class.java]}
 
     private lateinit var binding: FragmentMypageBinding
     override fun onAttach(context: Context) {
@@ -64,10 +67,10 @@ class MypageFragment : Fragment() {
     }
 
     private fun initData(id: String) {
-        val userLastOrderLiveData = OrderService().getLastMonthOrder(id)
+        val userLastOrderLiveData = orderViewModel.lastMonthOrderList
         userLastOrderLiveData.observe(viewLifecycleOwner) {
             list = it
-            orderAdapter = OrderAdapter(mainActivity, list)
+            orderAdapter = LatestOrderAdapter(requireContext(), list)
             orderAdapter.setItemClickListener(object : AdapterItemClickListener {
                 override fun onClick(view: View, position: Int, orderid: Any?) {
                     mainActivity.openFragment(2, "orderId", orderid as Int)
@@ -81,11 +84,10 @@ class MypageFragment : Fragment() {
                 adapter!!.stateRestorationPolicy =
                     RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
             }
-            binding.logout.setOnClickListener {
-                mainActivity.openFragment(5)
-            }
+        }
 
-            Log.d(TAG, "onViewCreated: $it")
+        binding.logout.setOnClickListener {
+            mainActivity.openFragment(5)
         }
     }
 

@@ -46,7 +46,7 @@ class ShoppingListViewModel(private val repository: StoreRepository) : ViewModel
     }
 
     fun shoppingListInitWithLatestOrder(orderId: Int) = viewModelScope.launch {
-        for(order in repository.getOrderInfo(orderId).body()!!) {
+        for(order in repository.getOrderDetail(orderId).body()!!) {
             val orderDetail = OrderDetail(productId = order.productId, quantity = order.quantity)
             orderDetail.img = order.img
             orderDetail.productName = order.productName

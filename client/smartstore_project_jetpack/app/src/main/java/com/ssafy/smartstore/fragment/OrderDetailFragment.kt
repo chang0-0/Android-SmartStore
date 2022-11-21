@@ -6,14 +6,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ssafy.smartstore.activity.MainActivity
 import com.ssafy.smartstore.adapter.OrderDetailListAdapter
 import com.ssafy.smartstore.databinding.FragmentOrderDetailBinding
 import com.ssafy.smartstore.response.OrderDetailResponse
-import com.ssafy.smartstore.service.OrderService
 import com.ssafy.smartstore.util.CommonUtils
+import com.ssafy.smartstore.viewModels.OrderDetailViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -22,6 +23,7 @@ private const val TAG = "OrderDetailFragment_싸피"
 class OrderDetailFragment : Fragment(){
     private lateinit var orderDetailListAdapter: OrderDetailListAdapter
     private lateinit var mainActivity: MainActivity
+    private val orderDetailViewModel by lazy { ViewModelProvider(this, OrderDetailViewModel.Factory(mainActivity.application, orderId))[OrderDetailViewModel::class.java]}
 
     private var orderId = -1
 
@@ -56,7 +58,8 @@ class OrderDetailFragment : Fragment(){
     }
 
     private fun initData(){
-        val orderDetails = OrderService().getOrderDetails(orderId)
+//        val orderDetails = OrderService().getOrderDetails(orderId)
+        val orderDetails = orderDetailViewModel.orderDetailList
         orderDetails.observe(
             viewLifecycleOwner
         ) { orderDetails ->
