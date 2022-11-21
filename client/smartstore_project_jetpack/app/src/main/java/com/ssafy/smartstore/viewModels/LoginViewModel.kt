@@ -7,11 +7,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ssafy.smartstore.dto.User
 import com.ssafy.smartstore.repository.UserRepositoryImpl
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.ssafy.smartstore.util.RetrofitUtil
+import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import retrofit2.awaitResponse
 
 private const val TAG = "LoginViewModel_싸피"
 
@@ -70,24 +71,12 @@ class LoginViewModel : ViewModel() {
 
     // 로그인
     fun login(user: User) {
+        val job1 = viewModelScope.async {
+            UserRepositoryImpl().login(user)
+        }
 
-        val response = UserRepositoryImpl().login(user)
-        response.enqueue(object : Callback<User> {
-            override fun onResponse(call: Call<User>, response: Response<User>) {
-                if (response.isSuccessful) {
-                    Log.d(TAG, "onResponse: ${response.body()}")
-
-                    _loginCheckUser.value = response.body() as User
-                } else {
-                    Log.d(TAG, "onResponse: ${response.errorBody()}")
-                }
-            }
-
-            override fun onFailure(call: Call<User>, t: Throwable) {
-                Log.d(TAG, "onFailure: $t")
-            }
-        })
-
-        Log.d(TAG, "logindViewModel 의 Login 메소드 끝: ")
+        viewModelScope.launch {
+            _loginCheckUser.value = job1.await()
+        }
     } // End of login
 } // End of LoginViewModel

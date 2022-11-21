@@ -7,7 +7,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.ssafy.smartstore.activity.LoginActivity
@@ -46,25 +45,17 @@ class LoginFragment : Fragment() {
         binding.btnLogin.setOnClickListener {
             if (binding.editTextLoginID.text.isNotEmpty() && binding.editTextLoginPW.text.isNotEmpty()) {
 
-                val scope = CoroutineScope(Dispatchers.Main).launch {
-                    login(
-                        binding.editTextLoginID.text.toString(),
-                        binding.editTextLoginPW.text.toString()
-                    )
-                }
-
-
-//                CoroutineScope(Dispatchers.IO).launch {
-//                    login(
-//                        binding.editTextLoginID.text.toString(),
-//                        binding.editTextLoginPW.text.toString()
-//                    )
-//                }
+                login(
+                    binding.editTextLoginID.text.toString(),
+                    binding.editTextLoginPW.text.toString()
+                )
 
             } else {
                 requireContext().showToastMessage("ID 또는 패스워드를 확인해 주세요.")
             }
         }
+
+        observeLogin()
 
         // 회원가입 버튼
         binding.btnJoin.setOnClickListener {
@@ -73,42 +64,36 @@ class LoginFragment : Fragment() {
     } // End of onViewCreated
 
     // Login API Call
-    private suspend fun login(loginId: String, loginPass: String) {
+    private fun login(loginId: String, loginPass: String) {
         val user = User(loginId, loginPass)
 
-        CoroutineScope(Dispatchers.IO).launch {
-            Log.d(TAG, "f1 시작")
+        val job2 = CoroutineScope(Dispatchers.IO).async {
+            Log.d(TAG, "job2 시작")
             loginViewModel.login(user)
-            Log.d(TAG, "f1 끝")
-            delay(100L)
-
-            withContext(Dispatchers.Main) {
-                loginSuccessCheck()
-            }
+            Log.d(TAG, "job2 종료")
         }
 
-//        withContext(Dispatchers.Main) {
-//            if (loginViewModel.loginCheckUser.value == null) {
-//                requireContext().showToastMessage("ID 또는 패스워드를 확인해 주세요.")
-//            } else {
-//                requireContext().showToastMessage("로그인 되었습니다.")
-//                ApplicationClass.sharedPreferencesUtil.addUser(loginViewModel.loginCheckUser.value!!)
-//                loginActivity.openFragment(1)
-//            }
-//        }
+        CoroutineScope(Dispatchers.Main).launch {
+            Log.d(TAG, "scope 시작")
+            job2.await()
+            Log.d(TAG, "job2.await() 종료")
+
+            Log.d(TAG, "scope 종료")
+        }
 
     } // End of login
 
-    private fun loginSuccessCheck() {
-        Log.d(TAG, "loginViewModel.loginCheckUser.value : ")
-        if (loginViewModel.loginCheckUser.value == null) {
-            requireContext().showToastMessage("ID 또는 패스워드를 확인해 주세요.")
-        } else {
-            requireContext().showToastMessage("로그인 되었습니다.")
-            ApplicationClass.sharedPreferencesUtil.addUser(loginViewModel.loginCheckUser.value!!)
-            loginActivity.openFragment(1)
-        }
-    }
-    
-} // End of LoginFragment class
+    private fun observeLogin() {
+        loginViewModel.loginCheckUser.observe(viewLifecycleOwner) {
+            Log.d(TAG, "observeLogin 여기가 몇 번 동작할까요? ")
 
+            if (loginViewModel.loginCheckUser.value!!.id != binding.editTextLoginID.text.toString() || loginViewModel.loginCheckUser.value!!.pass != binding.editTextLoginPW.text.toString()) {
+                requireContext().showToastMessage("ID 또는 패스워드를 확인해 주세요.")
+            } else {
+                requireContext().showToastMessage("로그인 되었습니다.")
+                ApplicationClass.sharedPreferencesUtil.addUser(loginViewModel.loginCheckUser.value!!)
+                loginActivity.openFragment(1)
+            }
+        }
+    } // End of observeLogin
+} // End of LoginFragment class

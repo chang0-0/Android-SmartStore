@@ -106,11 +106,8 @@ class MainActivity : AppCompatActivity() {
         val user = SharedPreferencesUtil(this).getUser()
 
         //userViewModel = ViewModelProvider(this, UserViewModelFactory(userApi = userApi, userRepository)).get(UserViewModel::class.java)
-        Log.d(TAG, "setUserData 실행:  setUserData ")
-
         // user 정보 viewModel에 저장해서 LiveData로 관리
         userViewModel.getUserData(user.id)
-        Log.d(TAG, "userDataSet@@@@@@@@@@@@@@: ${userViewModel.userData.value?.id}")
 
         //val userViewModel = UserViewModel(this.UserViewModelFactory).get(main)
     } // End of setUserData 

@@ -1,10 +1,15 @@
 package com.ssafy.smartstore.repository
 
+import android.util.Log
 import com.ssafy.smartstore.api.UserApi
 import com.ssafy.smartstore.config.ApplicationClass
 import com.ssafy.smartstore.dto.User
 import com.ssafy.smartstore.response.UserInfoResponse
 import com.ssafy.smartstore.util.RetrofitUtil
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Response
 
@@ -26,7 +31,18 @@ class UserRepositoryImpl : UserRepository {
         return RetrofitUtil.userService.insert(user)
     }
 
-    override fun login(user: User): Call<User> {
-        return RetrofitUtil.userService.login(user)
+    override suspend fun login(user: User): User {
+        var result = User()
+
+        withContext(Dispatchers.IO) {
+            try {
+                result = RetrofitUtil.userService.login(user)
+                Log.d(TAG, "login: ${result}")
+            } catch (e: Exception) {
+                Log.d(TAG, "login: ")
+            }
+        }
+
+        return result
     }
 }

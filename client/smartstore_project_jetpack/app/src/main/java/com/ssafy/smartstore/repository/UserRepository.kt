@@ -16,12 +16,12 @@ interface UserRepository {
     suspend fun getUserData(userId: String): Response<UserInfoResponse>
 
     // ID 중복체크
-    suspend fun checkUserId(userId : String) : Call<Boolean>
+    suspend fun checkUserId(userId: String): Call<Boolean>
 
     // 회원가입
-    suspend fun joinUser(user : User) : Call<Boolean>
+    suspend fun joinUser(user: User): Call<Boolean>
 
     // 로그인
-    fun login(user : User) : Call<User>
+    suspend fun login(user: User): User
 
 }
