@@ -13,7 +13,7 @@ interface UserApi {
 
     // 사용자 정보를 추가한다(회원가입)
     @POST("rest/user")
-    fun insert(@Body body: User): Call<Boolean>
+    suspend fun insert(@Body body: User): Response<Boolean>
 
     // 사용자의 정보와 함께 사용자의 주문 내역, 사용자 등급 정보를 반환한다.
     @GET("rest/user/info") // rest/user/info?id=iop90 형식

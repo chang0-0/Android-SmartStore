@@ -28,8 +28,22 @@ class UserRepository() {
         return RetrofitUtil.userService.isUsedId(userId)
     }
 
-    suspend fun joinUser(user: User): Call<Boolean> {
-        return RetrofitUtil.userService.insert(user)
+    suspend fun joinUser(user: User): Boolean {
+        var ans = false
+
+        withContext(Dispatchers.IO) {
+            Log.d(TAG, "UserImpl의 joinUser 메소드 안 ")
+            var result = RetrofitUtil.userService.insert(user)
+            Log.d(TAG, "joinUser의 withContext안 $result")
+
+            if (result.isSuccessful) {
+                ans = result.body() as Boolean
+            } else {
+                Log.d(TAG, "joinUser: ${result.errorBody()}")
+            }
+        }
+
+        return ans
     }
 
     suspend fun login(user: User): User {

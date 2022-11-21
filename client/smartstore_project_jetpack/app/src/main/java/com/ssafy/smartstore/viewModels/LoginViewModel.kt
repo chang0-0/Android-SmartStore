@@ -54,22 +54,22 @@ class LoginViewModel : ViewModel() {
     } // End of suspend checkUsedId
 
     // 유저 회원가입
-    suspend fun joinUser(user: User) = viewModelScope.launch {
-        val response = UserRepository().joinUser(user)
+    fun joinUser(user: User) {
 
-        response.enqueue(object : Callback<Boolean> {
-            override fun onResponse(call: Call<Boolean>, response: Response<Boolean>) {
-                if (response.isSuccessful) {
-                    val res = response.body() as Boolean
-                    _isCompleteJoin.value = res
-                }
-            }
+        val job1 = viewModelScope.async {
+            _isCompleteJoin.value = UserRepository().joinUser(user)
+        }
 
-            override fun onFailure(call: Call<Boolean>, t: Throwable) {
-                Log.d(TAG, "onFailure: $t")
-            }
-        })
-    } // End of suspend joinUser
+        viewModelScope.launch {
+            Log.d(TAG, "LoginViewModel joinUser 실행됨")
+            job1.await()
+        }
+
+    } // End of joinUser
+
+    fun joinChangeState() {
+        _isCompleteJoin.value = false
+    }
 
     // 로그인
     fun login(user: User) {
@@ -80,5 +80,6 @@ class LoginViewModel : ViewModel() {
         viewModelScope.launch {
             _loginCheckUser.value = job1.await()
         }
-    } // End of login
+    } // End of
+
 } // End of LoginViewModel
