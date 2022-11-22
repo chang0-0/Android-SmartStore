@@ -24,6 +24,7 @@ import com.ssafy.smartstore.dto.OrderDetail
 import com.ssafy.smartstore.util.RetrofitCallback
 import com.ssafy.smartstore.util.showToastMessage
 import com.ssafy.smartstore.viewModels.MainViewModel
+import com.ssafy.smartstore.viewModels.NoticeViewModel
 import com.ssafy.smartstore.viewModels.OrderViewModel
 import com.ssafy.smartstore.viewModels.ShoppingListViewModel
 
@@ -42,6 +43,7 @@ class ShoppingListFragment(val orderId : Int) : Fragment() {
     private val shoppingListViewModel by lazy { ViewModelProvider(mainActivity, ShoppingListViewModel.Factory(mainActivity.application))[ShoppingListViewModel::class.java]}
     private val orderViewModel by lazy { ViewModelProvider(this, OrderViewModel.Factory(mainActivity.application, ApplicationClass.sharedPreferencesUtil.getUser().id))[OrderViewModel::class.java]}
     private val activityViewModel by activityViewModels<MainViewModel>()
+    private val noticeViewModel by lazy { ViewModelProvider(mainActivity, NoticeViewModel.Factory(mainActivity.application))[NoticeViewModel::class.java]}
     private var isShop: Boolean = true
 
     override fun onAttach(context: Context) {
@@ -187,16 +189,24 @@ class ShoppingListFragment(val orderId : Int) : Fragment() {
 
     // order를 생성해 service 호출
     private fun completedOrder() {
+        var totalQuantity = 0
         val order = Order().apply {
             userId = ApplicationClass.sharedPreferencesUtil.getUser().id
             orderTable = "${activityViewModel.tableId}번 테이블"
             for (detail in shoppingListViewModel.shoppingList.value!!) {
                 details.add(OrderDetail(productId = detail.productId, quantity = detail.quantity))
+                totalQuantity += detail.quantity
             }
         }
 
         makeOrder(order)
         requireContext().showToastMessage("주문이 완료되었습니다.");
+
+        // 알림판에 정보를 집어넣기 위해 view model 이용
+        order.totalQuantity = totalQuantity
+        order.topProductName = shoppingListViewModel.shoppingList.value!![0].productName
+        noticeViewModel.noticeInsert(order)
+
 
         // 장바구니 초기화 -> 추후 livedata로 바뀔 시 수정 필요
         shoppingListViewModel.shoppingListClear()
@@ -208,23 +218,5 @@ class ShoppingListFragment(val orderId : Int) : Fragment() {
 
     private fun makeOrder(order: Order) {
         orderViewModel.makeOrder(order)
-    }
-
-    inner class OrderCallback : RetrofitCallback<Int> {
-        override fun onSuccess(code: Int, num: Int) {
-            if (num != null) {
-                Log.d(TAG, "onSuccess: insert 성공, num : ${num}")
-            } else {
-                Log.d(TAG, "onSuccess: insert 실패")
-            }
-        }
-
-        override fun onError(t: Throwable) {
-            Log.d(TAG, t.message ?: "comment insert 중 통신오류")
-        }
-
-        override fun onFailure(code: Int) {
-            Log.d(TAG, "onResponse: Error Code $code")
-        }
     }
 }

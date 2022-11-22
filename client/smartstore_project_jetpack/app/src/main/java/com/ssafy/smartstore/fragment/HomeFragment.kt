@@ -16,7 +16,9 @@ import com.ssafy.smartstore.adapter.LatestOrderAdapter
 import com.ssafy.smartstore.adapter.NoticeAdapter
 import com.ssafy.smartstore.config.ApplicationClass
 import com.ssafy.smartstore.databinding.FragmentHomeBinding
+import com.ssafy.smartstore.dto.Order
 import com.ssafy.smartstore.response.LatestOrderResponse
+import com.ssafy.smartstore.viewModels.NoticeViewModel
 import com.ssafy.smartstore.viewModels.OrderViewModel
 import com.ssafy.smartstore.viewModels.ShoppingListViewModel
 
@@ -26,8 +28,9 @@ private const val TAG = "HomeFragment_싸피"
 class HomeFragment : Fragment() {
     private val shoppingListViewModel by lazy { ViewModelProvider(mainActivity, ShoppingListViewModel.Factory(mainActivity.application))[ShoppingListViewModel::class.java]}
     private val orderViewModel by lazy { ViewModelProvider(this, OrderViewModel.Factory(mainActivity.application, userId))[OrderViewModel::class.java]}
+    private val noticeViewModel by lazy { ViewModelProvider(mainActivity, NoticeViewModel.Factory(mainActivity.application))[NoticeViewModel::class.java]}
     private lateinit var latestOrderAdapter: LatestOrderAdapter
-    private var noticeAdapter: NoticeAdapter = NoticeAdapter()
+    lateinit var noticeAdapter: NoticeAdapter
     private lateinit var mainActivity: MainActivity
     private lateinit var list: List<LatestOrderResponse>
     private lateinit var binding: FragmentHomeBinding
@@ -87,18 +90,35 @@ class HomeFragment : Fragment() {
     }
 
     fun initAdapter() {
-        noticeAdapter = NoticeAdapter()
-        binding.recyclerViewNoticeOrder.apply {
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            adapter = noticeAdapter
-            //원래의 목록위치로 돌아오게함
-            adapter!!.stateRestorationPolicy =
-                RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
+//        noticeAdapter = NoticeAdapter(this)
+//        binding.recyclerViewNoticeOrder.apply {
+//            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+//            adapter = noticeAdapter
+//            //원래의 목록위치로 돌아오게함
+//            adapter!!.stateRestorationPolicy =
+//                RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
+//        }
+//
+        noticeViewModel.noticeList.observe(viewLifecycleOwner) {
+            Log.d(TAG, "initAdapter: noticelist: $it")
+            noticeAdapter = NoticeAdapter(this)
+            noticeAdapter.setData(it)
+            binding.recyclerViewNoticeOrder.apply {
+                layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+                adapter = noticeAdapter
+                //원래의 목록위치로 돌아오게함
+                adapter!!.stateRestorationPolicy =
+                    RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
+            }
         }
     }
 
     private fun initUserName() {
         var user = ApplicationClass.sharedPreferencesUtil.getUser()
         binding.textUserName.text = "${user.name} 님"
+    }
+
+    fun deleteNotice(notice: Order) {
+        noticeViewModel.noticeDelete(notice)
     }
 }

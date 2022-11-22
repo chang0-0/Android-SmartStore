@@ -12,7 +12,7 @@ data class Order(
     val details: ArrayList<OrderDetail> = ArrayList()
 ) {
 
-    var totalQnanty:Int = 0
+    var totalQuantity:Int = 0
     var totalPrice:Int = 0
     var topProductName:String = ""
     var topImg:String = ""
