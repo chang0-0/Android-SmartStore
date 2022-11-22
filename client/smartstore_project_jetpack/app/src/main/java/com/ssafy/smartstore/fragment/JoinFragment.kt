@@ -57,8 +57,25 @@ class JoinFragment : Fragment() {
                 view.showSnackBarMessage("아이디를 입력해주세요")
             } else {
                 loginViewModel.checkUsedId(binding.editTextJoinID.text.toString())
+            }
+        }
 
-                checkIdResultMessage()
+        // observe는 버튼이 클릭될 때 마다 생성되므로, observer는 한번만 생성되도록 하는것이 맞다.
+        // setOnClickListener안에 넣으면 obser가 누적되서 계속 생성되므로 LiveData를 감시하는 observer가 계속 생성되게 된다
+        loginViewModel.isUsedId.observe(viewLifecycleOwner) {
+            if (binding.editTextJoinID.text!!.isEmpty()) {
+
+            } else {
+                Log.d(TAG, "checkIdResultMessage: ${it}")
+                if (it == true) {
+                    view!!.showSnackBarMessage("이미 사용중인 아이디 입니다.")
+                    binding.checkIdButton.setImageResource(R.drawable.ic_check_fail2)
+                    loginActivity.setVibrate()
+
+                } else {
+                    view!!.showSnackBarMessage("사용 가능한 아이디 입니다.")
+                    binding.checkIdButton.setImageResource(R.drawable.ic_check_success)
+                }
             }
         }
 
@@ -77,26 +94,30 @@ class JoinFragment : Fragment() {
 
                 Log.d(TAG, "onViewCreated: $user")
                 Log.d(TAG, "loginViewModel.joinUser 실행됨 ")
+
                 loginViewModel.joinUser(user)
+
                 userJoin()
             }
         }
 
-    } // End of onViewCreated
-
-    private fun checkIdResultMessage() {
-        loginViewModel.isUsedId.also {
-            if (it.value == true) {
-                view!!.showSnackBarMessage("이미 사용중인 아이디 입니다.")
-                binding.checkIdButton.setImageResource(R.drawable.ic_check_fail2)
-                loginActivity.setVibrate()
-
+        loginViewModel.isCompleteJoin.observe(viewLifecycleOwner) {
+            if (it == null) {
             } else {
-                view!!.showSnackBarMessage("사용 가능한 아이디 입니다.")
-                binding.checkIdButton.setImageResource(R.drawable.ic_check_success)
+                if (it == true) {
+
+                    view!!.showSnackBarMessage("회원가입 되었습니다. 환영합니다.")
+
+//                    loginViewModel.isCompleteJoin = true
+                    loginViewModel.stateChange()
+
+                    loginActivity.openFragment(3)
+                } else {
+                    view!!.showSnackBarMessage("회원가입에 실패하였습니다.")
+                }
             }
         }
-    } // End of checkIdResultMessage
+    } // End of onViewCreated
 
     private fun userJoin() {
         if (loginViewModel.isUsedId.value == false) {
@@ -104,16 +125,6 @@ class JoinFragment : Fragment() {
             return
         }
 
-        Log.d(TAG, "최종 회원가입 체크 : ${loginViewModel.isCompleteJoin.value}")
-
-        loginViewModel.isCompleteJoin.also {
-            if (it.value == true) {
-                view!!.showSnackBarMessage("회원가입 되었습니다. 환영합니다.")
-                loginActivity.openFragment(3)
-            } else {
-                view!!.showSnackBarMessage("회원가입에 실패하였습니다.")
-            }
-        }
     } // End of userJoin
 
     private fun emptyEditTextCheck(): Boolean {

@@ -24,8 +24,8 @@ class LoginViewModel : ViewModel() {
     val isUsedId: LiveData<Boolean>
         get() = _isUsedId
 
-    private val _isCompleteJoin = MutableLiveData<Boolean>()
-    val isCompleteJoin: LiveData<Boolean>
+    private val _isCompleteJoin = MutableLiveData<Boolean?>()
+    val isCompleteJoin: LiveData<Boolean?>
         get() = _isCompleteJoin
 
     private val _loginCheckUser = MutableLiveData<User>()
@@ -47,12 +47,11 @@ class LoginViewModel : ViewModel() {
     // 유저 회원가입
     fun joinUser(user: User) {
         val job1 = viewModelScope.async {
-            _isCompleteJoin.value = UserRepository().joinUser(user)
+            UserRepository().joinUser(user)
         }
 
         viewModelScope.launch {
-            Log.d(TAG, "LoginViewModel joinUser 실행됨")
-            job1.await()
+            _isCompleteJoin.value = job1.await()
         }
 
     } // End of joinUser
@@ -67,4 +66,10 @@ class LoginViewModel : ViewModel() {
             _loginCheckUser.value = job1.await()
         }
     } // End of login
+
+
+    fun stateChange() {
+        _isCompleteJoin.value = null
+    }
+
 } // End of LoginViewModel
