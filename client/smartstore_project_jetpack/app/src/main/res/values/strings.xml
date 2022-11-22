@@ -2,4 +2,5 @@
     <string name="app_name">Smartstore</string>
     <string name="name">벼락부자핫도그</string>
     <string name="api_key">AIzaSyCQr6q_Ky846n0wyerYCfhHmtR9h7oZay8</string>
+    <string name="sing_in_button_text"><u>sign in</u></string>
 </resources>

@@ -8,7 +8,6 @@
         android:gravity="center"
         android:background="@color/coffee_light_white">
 
-
     <TextView
             android:id="@+id/joinTitleTv"
             android:layout_width="wrap_content"
@@ -33,10 +32,9 @@
             app:helperTextTextAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
             app:layout_constraintTop_toBottomOf="@id/joinTitleTv"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/checkIdButton"
             android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            app:errorIconDrawable="@drawable/ic_error"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:errorIconDrawable="@drawable/ic_error">
 
         <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editTextJoinID"
@@ -45,6 +43,7 @@
                 android:layout_height="match_parent"
                 android:inputType="textPersonName|textNoSuggestions"
                 android:fontFamily="@font/ptserif_regular"
+                android:layout_marginRight="4dp"
                 android:maxLines="1" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -105,14 +104,15 @@
             android:textColor="@color/black"
             android:layout_width="140dp"
             android:layout_height="wrap_content"
-            android:text="Sing In"
+            android:text="sign in"
             app:layout_constraintTop_toBottomOf="@+id/nameTextField"
             android:layout_marginTop="20dp"
             app:layout_constraintStart_toStartOf="@+id/nameTextField"
             app:layout_constraintEnd_toEndOf="@+id/nameTextField" />
 
-    <ImageButton
-            android:id="@+id/btnConfirm"
+
+    <ImageView
+            android:id="@+id/checkIdButton"
             android:layout_width="57dp"
             android:layout_height="49dp"
             android:scaleType="fitCenter"
@@ -120,9 +120,9 @@
             android:src="@drawable/ic_check"
             android:padding="3dp"
             app:layout_constraintStart_toEndOf="@+id/joinTitleTv"
-            android:layout_marginStart="40dp"
+            android:layout_marginStart="72dp"
             app:layout_constraintTop_toTopOf="@+id/joinTitleTv"
-            android:layout_marginTop="8dp" />
+            android:layout_marginTop="84dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

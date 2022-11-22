@@ -1,9 +1,13 @@
 package com.ssafy.smartstore.activity
 
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.VibrationEffect
+import android.os.Vibrator
 import androidx.activity.viewModels
+import androidx.core.content.getSystemService
 import com.ssafy.smartstore.fragment.JoinFragment
 import com.ssafy.smartstore.fragment.LoginFragment
 import com.ssafy.smartstore.R
@@ -15,6 +19,7 @@ private const val TAG = "LoginActivity_싸피"
 
 class LoginActivity : AppCompatActivity() {
     private val loginViewModel: LoginViewModel by viewModels()
+    private lateinit var vibrate : Vibrator
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,7 +37,15 @@ class LoginActivity : AppCompatActivity() {
                 .replace(R.id.frame_layout_login, LoginFragment())
                 .commit()
         }
+
+        vibrate = getSystemService(VIBRATOR_SERVICE) as Vibrator
+
     } // End of onCreate
+
+    fun setVibrate() {
+        vibrate.vibrate(VibrationEffect.createOneShot(100L, 30))
+    } // End of setVibrate
+
 
     fun openFragment(int: Int) {
         val transaction = supportFragmentManager.beginTransaction()

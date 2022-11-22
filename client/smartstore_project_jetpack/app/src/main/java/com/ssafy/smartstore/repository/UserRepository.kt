@@ -22,7 +22,7 @@ class UserRepository() {
     suspend fun getUserData(userId: String): Response<UserInfoResponse> {
         //return userApi.getInfo(userId) 아래와 같은 코드
         return RetrofitUtil.userService.getInfo(userId)
-    }
+    } // End of getUserData
 
     // ID 중복 체크
     suspend fun checkUserId(userId: String): Boolean {
@@ -39,7 +39,7 @@ class UserRepository() {
         }
 
         return result
-    }
+    } // End of checkUserId
 
     suspend fun joinUser(user: User): Boolean {
         var ans = false
@@ -57,7 +57,7 @@ class UserRepository() {
         }
 
         return ans
-    }
+    } // End of joinUser
 
     suspend fun login(user: User): User {
         var result = User()
@@ -72,7 +72,7 @@ class UserRepository() {
         }
 
         return result
-    }
+    } // End of login
 
     companion object {
         private var instance: UserRepository? = null
@@ -81,5 +81,5 @@ class UserRepository() {
             if (instance == null) instance = UserRepository()
             return instance
         }
-    }
+    } // companion object
 }

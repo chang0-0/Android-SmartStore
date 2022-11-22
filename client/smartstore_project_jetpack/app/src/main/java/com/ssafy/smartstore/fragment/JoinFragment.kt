@@ -2,12 +2,15 @@ package com.ssafy.smartstore.fragment
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Vibrator
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import com.ssafy.smartstore.R
 import com.ssafy.smartstore.activity.LoginActivity
 import com.ssafy.smartstore.databinding.FragmentJoinBinding
 import com.ssafy.smartstore.dto.User
@@ -18,6 +21,7 @@ import com.ssafy.smartstore.viewModels.LoginViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.math.log
 
 // 회원 가입 화면
@@ -48,17 +52,15 @@ class JoinFragment : Fragment() {
         //id 중복 확인 버튼을 눌렀을 때, Api를 call해서 중복체크를 함.
         // 중복체크를 한 결과를 Boolean값으로 받아와서 loginViewModel의 _isUsedId.value를 갱신해준다.
         // 이 값이 갱신되면 observer가 value가 변한것을 감지해서 Toast Message를 띄운다.
-        binding.btnConfirm.setOnClickListener {
+        binding.checkIdButton.setOnClickListener {
             if (binding.editTextJoinID.text!!.isEmpty()) {
                 view.showSnackBarMessage("아이디를 입력해주세요")
             } else {
-                CoroutineScope(Dispatchers.IO).launch {
-                    loginViewModel.checkUsedId(binding.editTextJoinID.text.toString())
-                }
+                loginViewModel.checkUsedId(binding.editTextJoinID.text.toString())
+
+                checkIdResultMessage()
             }
         }
-
-        checkIdResultMessage()
 
         // 회원가입 버튼
         binding.btnJoin.setOnClickListener {
@@ -76,19 +78,22 @@ class JoinFragment : Fragment() {
                 Log.d(TAG, "onViewCreated: $user")
                 Log.d(TAG, "loginViewModel.joinUser 실행됨 ")
                 loginViewModel.joinUser(user)
+                userJoin()
             }
         }
-
-        userJoin()
 
     } // End of onViewCreated
 
     private fun checkIdResultMessage() {
-        loginViewModel.isUsedId.observe(viewLifecycleOwner) {
-            if (it) {
+        loginViewModel.isUsedId.also {
+            if (it.value == true) {
                 view!!.showSnackBarMessage("이미 사용중인 아이디 입니다.")
+                binding.checkIdButton.setImageResource(R.drawable.ic_check_fail2)
+                loginActivity.setVibrate()
+
             } else {
                 view!!.showSnackBarMessage("사용 가능한 아이디 입니다.")
+                binding.checkIdButton.setImageResource(R.drawable.ic_check_success)
             }
         }
     } // End of checkIdResultMessage
@@ -101,12 +106,12 @@ class JoinFragment : Fragment() {
 
         Log.d(TAG, "최종 회원가입 체크 : ${loginViewModel.isCompleteJoin.value}")
 
-        loginViewModel.isCompleteJoin.observe(viewLifecycleOwner) {
-            if (it) {
-                requireContext().showToastMessage("회원가입 되었습니다 환영합니다.")
+        loginViewModel.isCompleteJoin.also {
+            if (it.value == true) {
+                view!!.showSnackBarMessage("회원가입 되었습니다. 환영합니다.")
                 loginActivity.openFragment(3)
             } else {
-                requireContext().showToastMessage("회원가입에 실패하였습니다.")
+                view!!.showSnackBarMessage("회원가입에 실패하였습니다.")
             }
         }
     } // End of userJoin
