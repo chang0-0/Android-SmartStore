@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             style="@style/BottomNavigation"
-            android:background="@color/coffee_light_gray"
+            android:background="#434343"
             app:labelVisibilityMode="unlabeled"
             app:menu="@menu/bottom_nav" />
 

@@ -54,8 +54,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
-        android:src="@drawable/shopping_cart"
-        app:backgroundTint="@color/coffee_brown_light"
+        android:src="@drawable/ic_order_basket"
+        app:backgroundTint="#E8E8E8"
         app:fabSize="normal"
         app:elevation="0dp"
         app:useCompatPadding="false" />
