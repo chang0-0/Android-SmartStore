@@ -18,6 +18,7 @@ import com.ssafy.smartstore.viewModels.LoginViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlin.math.log
 
 // 회원 가입 화면
 private const val TAG = "JoinFragment_싸피"
@@ -44,8 +45,6 @@ class JoinFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        loginViewModel.joinChangeState()
-
         //id 중복 확인 버튼을 눌렀을 때, Api를 call해서 중복체크를 함.
         // 중복체크를 한 결과를 Boolean값으로 받아와서 loginViewModel의 _isUsedId.value를 갱신해준다.
         // 이 값이 갱신되면 observer가 value가 변한것을 감지해서 Toast Message를 띄운다.
@@ -64,9 +63,9 @@ class JoinFragment : Fragment() {
         // 회원가입 버튼
         binding.btnJoin.setOnClickListener {
             Log.d(TAG, "JoinFragment Join 버튼 누름")
-            
+
             if (!emptyEditTextCheck()) {
-                
+
             } else {
                 val user = User().apply {
                     id = binding.editTextJoinID.text.toString()
@@ -77,12 +76,10 @@ class JoinFragment : Fragment() {
                 Log.d(TAG, "onViewCreated: $user")
                 Log.d(TAG, "loginViewModel.joinUser 실행됨 ")
                 loginViewModel.joinUser(user)
-                
             }
         }
 
         userJoin()
-
 
     } // End of onViewCreated
 
@@ -103,7 +100,7 @@ class JoinFragment : Fragment() {
         }
 
         Log.d(TAG, "최종 회원가입 체크 : ${loginViewModel.isCompleteJoin.value}")
-        
+
         loginViewModel.isCompleteJoin.observe(viewLifecycleOwner) {
             if (it) {
                 requireContext().showToastMessage("회원가입 되었습니다 환영합니다.")

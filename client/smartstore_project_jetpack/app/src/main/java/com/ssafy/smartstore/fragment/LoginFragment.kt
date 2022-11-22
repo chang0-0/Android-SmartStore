@@ -79,7 +79,6 @@ class LoginFragment : Fragment() {
 
             Log.d(TAG, "scope 종료")
         }
-
     } // End of login
 
     private fun observeLogin() {
@@ -95,4 +94,5 @@ class LoginFragment : Fragment() {
             }
         }
     } // End of observeLogin
+
 } // End of LoginFragment class

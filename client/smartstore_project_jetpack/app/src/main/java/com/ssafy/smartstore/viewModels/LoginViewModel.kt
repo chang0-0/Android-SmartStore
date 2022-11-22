@@ -28,34 +28,24 @@ class LoginViewModel : ViewModel() {
     val isCompleteJoin: LiveData<Boolean>
         get() = _isCompleteJoin
 
-
     private val _loginCheckUser = MutableLiveData<User>()
     val loginCheckUser: LiveData<User>
         get() = _loginCheckUser
 
+    // ID 중복 체크
+    fun checkUsedId(userId: String) {
+        val job1 = viewModelScope.async {
+            UserRepository().checkUserId(userId)
+        }
 
-    // 사용자 ID 중복 체크
-    suspend fun checkUsedId(userId: String) = viewModelScope.launch {
-        val response = UserRepository().checkUserId(userId)
+        viewModelScope.launch {
+            _isUsedId.value = job1.await() as Boolean
+        }
 
-        response.enqueue(object : Callback<Boolean> {
-            override fun onResponse(call: Call<Boolean>, response: Response<Boolean>) {
-                if (response.isSuccessful) {
-                    val res = response.body() as Boolean
-                    _isUsedId.value = res
-                }
-            }
-
-            override fun onFailure(call: Call<Boolean>, t: Throwable) {
-                Log.d(TAG, "onFailure: $t")
-            }
-        })
-
-    } // End of suspend checkUsedId
+    } // End of checkUsedId
 
     // 유저 회원가입
     fun joinUser(user: User) {
-
         val job1 = viewModelScope.async {
             _isCompleteJoin.value = UserRepository().joinUser(user)
         }
@@ -67,10 +57,6 @@ class LoginViewModel : ViewModel() {
 
     } // End of joinUser
 
-    fun joinChangeState() {
-        _isCompleteJoin.value = false
-    }
-
     // 로그인
     fun login(user: User) {
         val job1 = viewModelScope.async {
@@ -80,6 +66,5 @@ class LoginViewModel : ViewModel() {
         viewModelScope.launch {
             _loginCheckUser.value = job1.await()
         }
-    } // End of
-
+    } // End of login
 } // End of LoginViewModel

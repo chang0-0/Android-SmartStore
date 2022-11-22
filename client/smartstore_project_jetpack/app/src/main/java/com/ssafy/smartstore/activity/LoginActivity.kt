@@ -12,8 +12,9 @@ import com.ssafy.smartstore.viewModels.LoginViewModel
 import com.ssafy.smartstore.viewModels.UserViewModel
 
 private const val TAG = "LoginActivity_싸피"
+
 class LoginActivity : AppCompatActivity() {
-    private val loginViewModel : LoginViewModel by viewModels()
+    private val loginViewModel: LoginViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,7 +24,7 @@ class LoginActivity : AppCompatActivity() {
         var user = sharedPreferencesUtil.getUser()
 
         //로그인 상태 확인. id가 있다면 로그인 된 상태
-        if (user.id != ""){
+        if (user.id != "") {
             openFragment(1)
         } else {
             // 가장 첫 화면은 홈 화면의 Fragment로 지정
@@ -31,11 +32,11 @@ class LoginActivity : AppCompatActivity() {
                 .replace(R.id.frame_layout_login, LoginFragment())
                 .commit()
         }
-    }
+    } // End of onCreate
 
-    fun openFragment(int: Int){
+    fun openFragment(int: Int) {
         val transaction = supportFragmentManager.beginTransaction()
-        when(int){
+        when (int) {
             1 -> {
                 val intent = Intent(this, MainActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -49,6 +50,5 @@ class LoginActivity : AppCompatActivity() {
                 .addToBackStack(null)
         }
         transaction.commit()
-    }
-
-}
+    } // End of openFragment
+} // End of LoginActivity class

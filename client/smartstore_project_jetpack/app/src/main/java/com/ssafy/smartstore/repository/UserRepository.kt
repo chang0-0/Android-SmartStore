@@ -24,8 +24,21 @@ class UserRepository() {
         return RetrofitUtil.userService.getInfo(userId)
     }
 
-    suspend fun checkUserId(userId: String): Call<Boolean> {
-        return RetrofitUtil.userService.isUsedId(userId)
+    // ID 중복 체크
+    suspend fun checkUserId(userId: String): Boolean {
+        var result = false
+
+        withContext(Dispatchers.IO) {
+            var response = RetrofitUtil.userService.isUsedId(userId)
+
+            if (response.isSuccessful) {
+                result = response.body() as Boolean
+            } else {
+                Log.d(TAG, "getUserData: ${response.errorBody()}")
+            }
+        }
+
+        return result
     }
 
     suspend fun joinUser(user: User): Boolean {
