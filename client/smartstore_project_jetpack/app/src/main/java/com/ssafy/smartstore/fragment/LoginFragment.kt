@@ -67,17 +67,11 @@ class LoginFragment : Fragment() {
         val user = User(loginId, loginPass)
 
         val job2 = CoroutineScope(Dispatchers.IO).async {
-            Log.d(TAG, "job2 시작")
             loginViewModel.login(user)
-            Log.d(TAG, "job2 종료")
         }
 
         CoroutineScope(Dispatchers.Main).launch {
-            Log.d(TAG, "scope 시작")
             job2.await()
-            Log.d(TAG, "job2.await() 종료")
-
-            Log.d(TAG, "scope 종료")
         }
     } // End of login
 
@@ -94,5 +88,4 @@ class LoginFragment : Fragment() {
             }
         }
     } // End of observeLogin
-
 } // End of LoginFragment class

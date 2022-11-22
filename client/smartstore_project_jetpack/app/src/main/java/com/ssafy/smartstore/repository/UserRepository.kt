@@ -45,10 +45,7 @@ class UserRepository() {
         var ans = false
 
         withContext(Dispatchers.IO) {
-            Log.d(TAG, "UserImpl의 joinUser 메소드 안 ")
             var result = RetrofitUtil.userService.insert(user)
-            Log.d(TAG, "joinUser의 withContext안 $result")
-
             if (result.isSuccessful) {
                 ans = result.body() as Boolean
             } else {
@@ -65,7 +62,6 @@ class UserRepository() {
         withContext(Dispatchers.IO) {
             try {
                 result = RetrofitUtil.userService.login(user)
-                Log.d(TAG, "login: ${result}")
             } catch (e: Exception) {
                 Log.d(TAG, "login: ")
             }

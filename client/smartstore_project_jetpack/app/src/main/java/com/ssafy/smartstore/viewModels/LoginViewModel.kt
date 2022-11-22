@@ -1,20 +1,13 @@
 package com.ssafy.smartstore.viewModels
 
-import android.app.Application
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ssafy.smartstore.config.ApplicationClass
 import com.ssafy.smartstore.dto.User
 import com.ssafy.smartstore.repository.UserRepository
-import com.ssafy.smartstore.util.RetrofitUtil
-import kotlinx.coroutines.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.awaitResponse
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 private const val TAG = "LoginViewModel_싸피"
 
@@ -67,7 +60,7 @@ class LoginViewModel : ViewModel() {
         }
     } // End of login
 
-
+    // 로그인 성공 여부 flag값 변경
     fun stateChange() {
         _isCompleteJoin.value = null
     }

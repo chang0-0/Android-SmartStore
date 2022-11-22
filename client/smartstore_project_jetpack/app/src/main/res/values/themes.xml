@@ -51,7 +51,7 @@
     </style>
 
     <style name="BottomNavigation" parent="Widget.MaterialComponents.BottomNavigationView.Colored">
-        <item name="android:background">@color/coffee_brown</item>
+        <item name="android:background">@color/white</item>
     </style>
 
 </resources>
