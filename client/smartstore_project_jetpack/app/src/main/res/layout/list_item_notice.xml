@@ -8,7 +8,6 @@
         android:gravity="center">
 
     <TextView
-
             android:gravity="start"
             android:id="@+id/textNoticeContent"
             android:layout_width="wrap_content"
@@ -34,6 +33,5 @@
             android:background="@drawable/button_regular"
             app:backgroundTint="@null"
             app:srcCompat="@android:drawable/ic_menu_close_clear_cancel" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

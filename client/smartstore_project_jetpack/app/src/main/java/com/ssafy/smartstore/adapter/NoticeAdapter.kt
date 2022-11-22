@@ -16,9 +16,9 @@ class NoticeAdapter(val fragment: HomeFragment) : RecyclerView.Adapter<NoticeAda
     inner class NoticeHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bindInfo(data: Order) {
             if(data.totalQuantity > 1) {
-                binding.textNoticeContent.text = "${data.topProductName} 외 ${data.totalQuantity - 1}건"
+                binding.textNoticeContent.text = "${data.topProductName} 외 ${data.totalQuantity - 1}건 주문이 완료되었습니다."
             } else {
-                binding.textNoticeContent.text = data.topProductName
+                binding.textNoticeContent.text = "${data.topProductName} 주문이 완료되었습니다"
             }
 
             binding.imageNoticeCancel.setOnClickListener {
