@@ -64,5 +64,4 @@ class ApplicationClass : Application() {
             .client(okHttpClient)
             .build()
     }
-
 }

@@ -31,7 +31,8 @@ class ShoppingListAdapter(
             binding.textShoppingMenuName.text = orderDetail.productName
             binding.textShoppingMenuMoney.text = orderDetail.unitPrice.toString() + "원"
             binding.textShoppingMenuCount.text = orderDetail.quantity.toString() + "잔"
-            binding.textShoppingMenuMoneyAll.text = (orderDetail.quantity * orderDetail.unitPrice).toString() + "원"
+            binding.textShoppingMenuMoneyAll.text =
+                (orderDetail.quantity * orderDetail.unitPrice).toString() + "원"
 
             binding.cancel.setOnClickListener {
                 fragment.shoppingListDelete(orderDetail)
@@ -42,7 +43,8 @@ class ShoppingListAdapter(
     } // End of ShoppingListHolder inner class
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShoppingListHolder {
-        binding = ListItemShoppingListBinding.inflate(LayoutInflater.from(parent.context))
+        binding = ListItemShoppingListBinding.inflate(inflater, container, false)
+        //binding = ListItemShoppingListBinding.inflate()
         return ShoppingListHolder(binding.root)
     } // End of onCreateViewHolder
 

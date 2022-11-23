@@ -3,7 +3,6 @@ package com.ssafy.smartstore.fragment
 import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,29 +17,23 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ssafy.smartstore.R
 import com.ssafy.smartstore.activity.MainActivity
 import com.ssafy.smartstore.adapter.ShoppingListAdapter
-import com.ssafy.smartstore.config.ApplicationClass
-import com.ssafy.smartstore.dto.Order
+import com.ssafy.smartstore.databinding.FragmentShoppingListBinding
 import com.ssafy.smartstore.dto.OrderDetail
-import com.ssafy.smartstore.util.RetrofitCallback
 import com.ssafy.smartstore.util.showSnackBarMessage
-import com.ssafy.smartstore.util.showToastMessage
 import com.ssafy.smartstore.viewModels.MainViewModel
-import com.ssafy.smartstore.viewModels.NoticeViewModel
-import com.ssafy.smartstore.viewModels.OrderViewModel
 import com.ssafy.smartstore.viewModels.ShoppingListViewModel
 
 private const val TAG = "ShoppingListFragment_싸피"
 
 //장바구니 Fragment
 class ShoppingListFragment(val orderId: Int) : Fragment() {
+    private lateinit var binding: FragmentShoppingListBinding
     private lateinit var shoppingListRecyclerView: RecyclerView
     private lateinit var shoppingListAdapter: ShoppingListAdapter
     private lateinit var mainActivity: MainActivity
-    private lateinit var btnShop: Button
-    private lateinit var btnTakeout: Button
-    private lateinit var btnOrder: Button
-    private lateinit var txtShoppingCount: TextView
-    private lateinit var txtShoppingMoney: TextView
+    lateinit var dialog: AlertDialog
+
+
     private val shoppingListViewModel by lazy {
         ViewModelProvider(
             mainActivity,
@@ -65,20 +58,20 @@ class ShoppingListFragment(val orderId: Int) : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val view = inflater.inflate(R.layout.fragment_shopping_list, null)
-        shoppingListRecyclerView = view.findViewById(R.id.recyclerViewShoppingList)
-        btnShop = view.findViewById(R.id.btnShop)
-        btnTakeout = view.findViewById(R.id.btnTakeout)
-        btnOrder = view.findViewById(R.id.btnOrder)
-        txtShoppingCount = view.findViewById(R.id.textShoppingCount)
-        txtShoppingMoney = view.findViewById(R.id.textShoppingMoney)
-
-        return view
+        binding = FragmentShoppingListBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.backButton.setOnClickListener {
+            mainActivity.supportFragmentManager.beginTransaction()
+                .replace(R.id.frame_layout_main, OrderFragment())
+                .commit()
+        }
+
+        shoppingListRecyclerView = binding.recyclerViewShoppingList
         shoppingListAdapter = ShoppingListAdapter(requireContext(), this)
 
         // 일반 주문
@@ -97,21 +90,11 @@ class ShoppingListFragment(val orderId: Int) : Fragment() {
             }
         }
 
-        btnShop.setOnClickListener {
-            btnShop.background =
-                ContextCompat.getDrawable(requireContext(), R.drawable.button_color)
-            btnTakeout.background =
-                ContextCompat.getDrawable(requireContext(), R.drawable.button_non_color)
-            isShop = true
+        binding.changeSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
+            isShop = isChecked
         }
-        btnTakeout.setOnClickListener {
-            btnTakeout.background =
-                ContextCompat.getDrawable(requireContext(), R.drawable.button_color)
-            btnShop.background =
-                ContextCompat.getDrawable(requireContext(), R.drawable.button_non_color)
-            isShop = false
-        }
-        btnOrder.setOnClickListener {
+
+        binding.btnOrder.setOnClickListener {
             if(shoppingListViewModel.shoppingList.value!!.size == 0) {
                 view.showSnackBarMessage("장바구니가 비어있습니다")
             } else {
@@ -154,8 +137,8 @@ class ShoppingListFragment(val orderId: Int) : Fragment() {
             count += shopping.quantity
             money += shopping.unitPrice * shopping.quantity
         }
-        txtShoppingCount.text = "총 ${count}개"
-        txtShoppingMoney.text = "${money}원"
+        binding.textShoppingCount.text = "총 ${count}개"
+        binding.textShoppingMoney.text = "${money}원"
     }   // End of moneyAndCountRefresh
 
 
@@ -181,7 +164,7 @@ class ShoppingListFragment(val orderId: Int) : Fragment() {
         }
     }
 
-    lateinit var dialog: AlertDialog
+
     private fun showDialogForOrderTakeoutOver200m() {
         val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
         builder.setTitle("알림")
