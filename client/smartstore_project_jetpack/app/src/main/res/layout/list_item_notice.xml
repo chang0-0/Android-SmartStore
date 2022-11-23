@@ -8,30 +8,31 @@
         android:gravity="center">
 
     <TextView
-            android:gravity="start"
-            android:id="@+id/textNoticeContent"
-            android:layout_width="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:text="주문하신 메뉴가 나왔습니다."
-            android:textSize="15dp"
-            android:layout_weight="1"
-            style="@style/Text.Regular" />
+        android:id="@+id/textNoticeContent"
+        style="@style/Text.Regular"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        android:layout_weight="1"
+        android:gravity="start"
+        android:text="주문하신 메뉴가 나왔습니다."
+        android:textSize="15dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-            android:id="@+id/imageNoticeCancel"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_gravity="center"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:background="@drawable/button_regular"
-            app:backgroundTint="@null"
-            app:srcCompat="@android:drawable/ic_menu_close_clear_cancel" />
+        android:id="@+id/imageNoticeCancel"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_gravity="center"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/button_regular"
+        app:backgroundTint="@null"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@android:drawable/ic_menu_close_clear_cancel" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

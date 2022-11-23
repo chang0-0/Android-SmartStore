@@ -151,7 +151,7 @@ class ShoppingListFragment(val orderId : Int) : Fragment() {
             "Table NFC를 찍어주세요.\n"
         )
 
-        completedOrder()
+//        completedOrder()
         requireContext().showToastMessage(activityViewModel.tableId)
 
         if (activityViewModel.tableId != "") {
@@ -204,7 +204,8 @@ class ShoppingListFragment(val orderId : Int) : Fragment() {
 
         // 알림판에 정보를 집어넣기 위해 view model 이용
         order.totalQuantity = totalQuantity
-        order.topProductName = shoppingListViewModel.shoppingList.value!![0].productName
+        // 여러 개 주문의 경우 마지막 상품을 대표 상품으로 텍스트 표시 => 최근 주문내역에 표시되는 것과 동일
+        order.topProductName = shoppingListViewModel.shoppingList.value!![shoppingListViewModel.shoppingList.value!!.size-1].productName
         noticeViewModel.noticeInsert(order)
 
 

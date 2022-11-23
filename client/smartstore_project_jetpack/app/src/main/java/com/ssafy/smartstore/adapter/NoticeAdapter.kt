@@ -43,7 +43,7 @@ class NoticeAdapter(val fragment: HomeFragment) : RecyclerView.Adapter<NoticeAda
 
     @SuppressLint("NotifyDataSetChanged")
     internal fun setData(newItems: List<Order>) {
-        this.list = newItems
+        this.list = newItems.reversed()     // 최근 주문이 위쪽에 위치해야 하므로 reverse 적용
         notifyDataSetChanged()
     }
 }

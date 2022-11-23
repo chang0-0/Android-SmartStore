@@ -90,15 +90,6 @@ class HomeFragment : Fragment() {
     }
 
     fun initAdapter() {
-//        noticeAdapter = NoticeAdapter(this)
-//        binding.recyclerViewNoticeOrder.apply {
-//            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-//            adapter = noticeAdapter
-//            //원래의 목록위치로 돌아오게함
-//            adapter!!.stateRestorationPolicy =
-//                RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
-//        }
-//
         noticeViewModel.noticeList.observe(viewLifecycleOwner) {
             Log.d(TAG, "initAdapter: noticelist: $it")
             noticeAdapter = NoticeAdapter(this)
