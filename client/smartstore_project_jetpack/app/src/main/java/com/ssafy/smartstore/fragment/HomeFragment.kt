@@ -69,7 +69,6 @@ class HomeFragment : Fragment() {
         userLastOrderLiveData.observe(viewLifecycleOwner) {
             list = it
             latestOrderAdapter = LatestOrderAdapter(requireContext(), list)
-            Log.d(TAG, "initData: list: ${list}")
             binding.recyclerViewLatestOrder.apply {
                 layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                 adapter = latestOrderAdapter

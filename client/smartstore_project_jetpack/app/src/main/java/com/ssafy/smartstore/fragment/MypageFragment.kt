@@ -64,7 +64,6 @@ class MypageFragment : Fragment() {
         val userLastOrderLiveData = orderViewModel.lastMonthOrderList
         userLastOrderLiveData.observe(viewLifecycleOwner) {
             list = it
-            Log.d(TAG, "initData: list: $list")
             orderAdapter = OrderAdapter(requireContext(), list)
             orderAdapter.setItemClickListener(object : AdapterItemClickListener {
                 override fun onClick(view: View, position: Int, orderid: Any?) {

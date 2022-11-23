@@ -62,8 +62,27 @@ class ShoppingListFragment(val orderId: Int) : Fragment() {
         return binding.root
     }
 
+    private fun initDialog() {
+        val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
+        builder.setTitle("알림")
+        builder.setMessage(
+            "Table NFC를 찍어주세요.\n"
+        )
+
+        builder.setCancelable(true)
+        builder.setNegativeButton(
+            "취소"
+        ) { dialog, _ ->
+            dialog.cancel()
+        }
+
+        dialog = builder.create()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        initDialog()
 
         binding.backButton.setOnClickListener {
             mainActivity.supportFragmentManager.beginTransaction()
@@ -143,20 +162,6 @@ class ShoppingListFragment(val orderId: Int) : Fragment() {
 
 
     private fun showDialogForOrderInShop() {
-        val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
-        builder.setTitle("알림")
-        builder.setMessage(
-            "Table NFC를 찍어주세요.\n"
-        )
-
-        builder.setCancelable(true)
-        builder.setNegativeButton(
-            "취소"
-        ) { dialog, _ ->
-            dialog.cancel()
-        }
-
-        dialog = builder.create()
         dialog.show()
 
         dialog.setOnDismissListener {
