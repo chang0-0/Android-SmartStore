@@ -65,9 +65,7 @@ class JoinFragment : Fragment() {
                 }
 
                 // 마지막 Id 중복 체크에 성공했을 경우에만 로그인 진행.
-                if (finalIsUsedIdCheck()) {
-                    loginViewModel.joinUser(user)
-                }
+                loginViewModel.joinUser(user)
             }
         }
 

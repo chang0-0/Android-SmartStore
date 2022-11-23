@@ -31,7 +31,7 @@ import com.ssafy.smartstore.viewModels.ShoppingListViewModel
 private const val TAG = "ShoppingListFragment_싸피"
 
 //장바구니 Fragment
-class ShoppingListFragment(val orderId : Int) : Fragment() {
+class ShoppingListFragment(val orderId: Int) : Fragment() {
     private lateinit var shoppingListRecyclerView: RecyclerView
     private lateinit var shoppingListAdapter: ShoppingListAdapter
     private lateinit var mainActivity: MainActivity
@@ -40,10 +40,28 @@ class ShoppingListFragment(val orderId : Int) : Fragment() {
     private lateinit var btnOrder: Button
     private lateinit var txtShoppingCount: TextView
     private lateinit var txtShoppingMoney: TextView
-    private val shoppingListViewModel by lazy { ViewModelProvider(mainActivity, ShoppingListViewModel.Factory(mainActivity.application))[ShoppingListViewModel::class.java]}
-    private val orderViewModel by lazy { ViewModelProvider(this, OrderViewModel.Factory(mainActivity.application, ApplicationClass.sharedPreferencesUtil.getUser().id))[OrderViewModel::class.java]}
+    private val shoppingListViewModel by lazy {
+        ViewModelProvider(
+            mainActivity,
+            ShoppingListViewModel.Factory(mainActivity.application)
+        )[ShoppingListViewModel::class.java]
+    }
+    private val orderViewModel by lazy {
+        ViewModelProvider(
+            this,
+            OrderViewModel.Factory(
+                mainActivity.application,
+                ApplicationClass.sharedPreferencesUtil.getUser().id
+            )
+        )[OrderViewModel::class.java]
+    }
     private val activityViewModel by activityViewModels<MainViewModel>()
-    private val noticeViewModel by lazy { ViewModelProvider(mainActivity, NoticeViewModel.Factory(mainActivity.application))[NoticeViewModel::class.java]}
+    private val noticeViewModel by lazy {
+        ViewModelProvider(
+            mainActivity,
+            NoticeViewModel.Factory(mainActivity.application)
+        )[NoticeViewModel::class.java]
+    }
     private var isShop: Boolean = true
 
     override fun onAttach(context: Context) {
@@ -75,7 +93,7 @@ class ShoppingListFragment(val orderId : Int) : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        shoppingListAdapter = ShoppingListAdapter(requireContext(),this)
+        shoppingListAdapter = ShoppingListAdapter(requireContext(), this)
 
         // 일반 주문
         shoppingListRecyclerView.apply {
@@ -123,7 +141,7 @@ class ShoppingListFragment(val orderId : Int) : Fragment() {
         mainActivity.hideBottomNav(false)
 
         // 최근 주문에서 클릭해서 장바구니로 넘어온 경우 뒤로가기 시 장바구니 초기화
-        if(orderId != 0) shoppingListViewModel.shoppingListClear()
+        if (orderId != 0) shoppingListViewModel.shoppingListClear()
     }
 
     fun shoppingListDelete(orderDetail: OrderDetail) {
@@ -151,7 +169,7 @@ class ShoppingListFragment(val orderId : Int) : Fragment() {
             "Table NFC를 찍어주세요.\n"
         )
 
-//        completedOrder()
+        completedOrder()
         requireContext().showToastMessage(activityViewModel.tableId)
 
         if (activityViewModel.tableId != "") {
@@ -205,7 +223,8 @@ class ShoppingListFragment(val orderId : Int) : Fragment() {
         // 알림판에 정보를 집어넣기 위해 view model 이용
         order.totalQuantity = totalQuantity
         // 여러 개 주문의 경우 마지막 상품을 대표 상품으로 텍스트 표시 => 최근 주문내역에 표시되는 것과 동일
-        order.topProductName = shoppingListViewModel.shoppingList.value!![shoppingListViewModel.shoppingList.value!!.size-1].productName
+        order.topProductName =
+            shoppingListViewModel.shoppingList.value!![shoppingListViewModel.shoppingList.value!!.size - 1].productName
         noticeViewModel.noticeInsert(order)
 
 
