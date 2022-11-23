@@ -43,7 +43,7 @@ class ShoppingListAdapter(
     } // End of ShoppingListHolder inner class
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShoppingListHolder {
-        binding = ListItemShoppingListBinding.inflate(inflater, container, false)
+        binding = ListItemShoppingListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         //binding = ListItemShoppingListBinding.inflate()
         return ShoppingListHolder(binding.root)
     } // End of onCreateViewHolder
