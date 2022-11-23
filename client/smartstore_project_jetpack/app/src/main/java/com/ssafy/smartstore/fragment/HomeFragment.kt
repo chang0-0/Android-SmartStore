@@ -56,6 +56,7 @@ class HomeFragment : Fragment() {
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        mainActivity.hideBottomNav(false)
         Log.d(TAG, "onViewCreated: ")
         orderViewModel.getLatesetOrderList(userId)
         initData(ApplicationClass.sharedPreferencesUtil.getUser().id)

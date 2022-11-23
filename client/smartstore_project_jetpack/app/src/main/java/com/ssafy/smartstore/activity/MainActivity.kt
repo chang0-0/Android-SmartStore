@@ -16,18 +16,22 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.gun0912.tedpermission.provider.TedPermissionProvider.context
 import com.ssafy.smartstore.R
 import com.ssafy.smartstore.api.UserApi
 import com.ssafy.smartstore.config.ApplicationClass
 import com.ssafy.smartstore.databinding.ActivityMainBinding
+import com.ssafy.smartstore.dto.Order
+import com.ssafy.smartstore.dto.OrderDetail
 import com.ssafy.smartstore.fragment.*
 import com.ssafy.smartstore.repository.UserRepository
 import com.ssafy.smartstore.util.SharedPreferencesUtil
 import com.ssafy.smartstore.util.showToastMessage
-import com.ssafy.smartstore.viewModels.MainViewModel
-import com.ssafy.smartstore.viewModels.UserViewModel
+import com.ssafy.smartstore.viewModels.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -40,13 +44,32 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var filters: Array<IntentFilter>
     private lateinit var pIntent: PendingIntent
-    private lateinit var userApi: UserApi
     private val newActivityViewModel: MainViewModel by viewModels()
-    private lateinit var userRepository: UserRepository
-
-    //private lateinit var userViewModel: UserViewModel
-//    private val userViewModel: UserViewModel by viewModels()
     private val userViewModel by lazy { ViewModelProvider(this, UserViewModel.Factory(this.application, ApplicationClass.sharedPreferencesUtil.getUser().id))[UserViewModel::class.java] }
+    private val shoppingListViewModel by lazy {
+        ViewModelProvider(
+            this,
+            ShoppingListViewModel.Factory(this.application)
+        )[ShoppingListViewModel::class.java]
+    }
+    private val orderViewModel by lazy {
+        ViewModelProvider(
+            this,
+            OrderViewModel.Factory(
+                this.application,
+                ApplicationClass.sharedPreferencesUtil.getUser().id
+            )
+        )[OrderViewModel::class.java]
+    }
+    private val noticeViewModel by lazy {
+        ViewModelProvider(
+            this,
+            NoticeViewModel.Factory(this.application)
+        )[NoticeViewModel::class.java]
+    }
+
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -198,50 +221,60 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         setIntent(intent)
         getNFCData(getIntent())
+
+        if(newActivityViewModel.flag)
+            orderCompletedThenGoToMain()
+    }
+
+    private fun orderCompletedThenGoToMain() {
         parseData(intent)
+        completedOrder()
+
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.frame_layout_main, HomeFragment())
+            .commit()
+
+        showToastMessage("주문 완료되었습니다.")
+        newActivityViewModel.tableIdSet("")
+    }
+
+    private fun completedOrder() {
+        var totalQuantity = 0
+        val order = Order().apply {
+            userId = ApplicationClass.sharedPreferencesUtil.getUser().id
+            orderTable = "${newActivityViewModel.tableId}번 테이블"
+            for (detail in shoppingListViewModel.shoppingList.value!!) {
+                details.add(OrderDetail(productId = detail.productId, quantity = detail.quantity))
+                totalQuantity += detail.quantity
+            }
+        }
+
+        makeOrder(order)
+
+        // 알림판에 정보를 집어넣기 위해 view model 이용
+        order.totalQuantity = totalQuantity
+        // 여러 개 주문의 경우 마지막 상품을 대표 상품으로 텍스트 표시 => 최근 주문내역에 표시되는 것과 동일
+        order.topProductName =
+            shoppingListViewModel.shoppingList.value!![shoppingListViewModel.shoppingList.value!!.size - 1].productName
+        noticeViewModel.noticeInsert(order)
+
+        // 장바구니 초기화 -> 추후 livedata로 바뀔 시 수정 필요
+        shoppingListViewModel.shoppingListClear()
+    }
+
+    private fun makeOrder(order: Order) {
+        orderViewModel.makeOrder(order)
     }
 
     private fun getNFCData(intent: Intent) {
-        Toast.makeText(this, "수신 액션 : " + getIntent().action, Toast.LENGTH_SHORT).show()
         val action = intent.action
-        Log.d(TAG, "getNFCData: " + action)
         if (action == NfcAdapter.ACTION_NDEF_DISCOVERED || action == NfcAdapter.ACTION_TECH_DISCOVERED || action == NfcAdapter.ACTION_TAG_DISCOVERED) {
             intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)!!.takeWhile {
                 val msg = it as NdefMessage
-                Log.d(TAG, "getNFCData: ${msg.records.size}")
-
-                for (record in msg.records) {
-                    Log.d(TAG, "getNFCData tnf : ${record.tnf}")
-                    Log.d(TAG, "getNFCData id : ${String(record.id)}")
-                    Log.d(TAG, "getNFCData type : ${String(record.type)}")
-                    Log.d(TAG, "getNFCData payload: ${String(record.payload)}")
-
-                    val type = String(record.type)
-                    val payload = record.payload
-
-                    when (type) {
-                        "T" -> {
-                            showToastMessage("${payload}")
-
-                        }
-                        "U" -> {
-                            val uri = record.toUri()
-                            startActivity(
-                                Intent().apply {
-                                    setAction(Intent.ACTION_SENDTO)
-                                    data = uri
-                                })
-                        }
-                        "Sp" -> {
-
-                        }
-                    }
-                }
 
                 false
             }
@@ -257,7 +290,6 @@ class MainActivity : AppCompatActivity() {
             val payload = String(record[0].payload, 3, record[0].payload.size - 3)
 
             newActivityViewModel.tableIdSet(payload)
-            Log.d(TAG, "parseData: ${payload}")
             false
         }
     }

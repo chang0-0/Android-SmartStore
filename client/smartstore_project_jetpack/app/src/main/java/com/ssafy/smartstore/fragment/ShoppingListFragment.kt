@@ -22,6 +22,7 @@ import com.ssafy.smartstore.config.ApplicationClass
 import com.ssafy.smartstore.dto.Order
 import com.ssafy.smartstore.dto.OrderDetail
 import com.ssafy.smartstore.util.RetrofitCallback
+import com.ssafy.smartstore.util.showSnackBarMessage
 import com.ssafy.smartstore.util.showToastMessage
 import com.ssafy.smartstore.viewModels.MainViewModel
 import com.ssafy.smartstore.viewModels.NoticeViewModel
@@ -46,22 +47,7 @@ class ShoppingListFragment(val orderId: Int) : Fragment() {
             ShoppingListViewModel.Factory(mainActivity.application)
         )[ShoppingListViewModel::class.java]
     }
-    private val orderViewModel by lazy {
-        ViewModelProvider(
-            this,
-            OrderViewModel.Factory(
-                mainActivity.application,
-                ApplicationClass.sharedPreferencesUtil.getUser().id
-            )
-        )[OrderViewModel::class.java]
-    }
     private val activityViewModel by activityViewModels<MainViewModel>()
-    private val noticeViewModel by lazy {
-        ViewModelProvider(
-            mainActivity,
-            NoticeViewModel.Factory(mainActivity.application)
-        )[NoticeViewModel::class.java]
-    }
     private var isShop: Boolean = true
 
     override fun onAttach(context: Context) {
@@ -126,14 +112,25 @@ class ShoppingListFragment(val orderId: Int) : Fragment() {
             isShop = false
         }
         btnOrder.setOnClickListener {
-            if (isShop) {   // 거리가 200 이하라면
-                showDialogForOrderInShop()
-
+            if(shoppingListViewModel.shoppingList.value!!.size == 0) {
+                view.showSnackBarMessage("장바구니가 비어있습니다")
             } else {
-                // 거리가 200 이상이라면
-                showDialogForOrderTakeoutOver200m()
+                if (isShop) {   // 거리가 200 이하라면
+                    activityViewModel.flag = true
+                    showDialogForOrderInShop()
+
+
+                } else {
+                    // 거리가 200 이상이라면
+                    showDialogForOrderTakeoutOver200m()
+                }
             }
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        dialog.dismiss()
     }
 
     override fun onDestroy() {
@@ -169,13 +166,6 @@ class ShoppingListFragment(val orderId: Int) : Fragment() {
             "Table NFC를 찍어주세요.\n"
         )
 
-        completedOrder()
-        requireContext().showToastMessage(activityViewModel.tableId)
-
-        if (activityViewModel.tableId != "") {
-            completedOrder()
-        }
-
         builder.setCancelable(true)
         builder.setNegativeButton(
             "취소"
@@ -185,6 +175,10 @@ class ShoppingListFragment(val orderId: Int) : Fragment() {
 
         dialog = builder.create()
         dialog.show()
+
+        dialog.setOnDismissListener {
+            activityViewModel.flag = false
+        }
     }
 
     lateinit var dialog: AlertDialog
@@ -195,48 +189,10 @@ class ShoppingListFragment(val orderId: Int) : Fragment() {
             "현재 고객님의 위치가 매장과 200m 이상 떨어져 있습니다.\n정말 주문하시겠습니까?"
         )
         builder.setCancelable(true)
-        builder.setPositiveButton("확인") { _, _ ->
-            completedOrder()
-        }
         builder.setNegativeButton(
             "취소"
         ) { dialog, _ -> dialog.cancel() }
         dialog = builder.create()
         dialog.show()
-    }
-
-    // order를 생성해 service 호출
-    private fun completedOrder() {
-        var totalQuantity = 0
-        val order = Order().apply {
-            userId = ApplicationClass.sharedPreferencesUtil.getUser().id
-            orderTable = "${activityViewModel.tableId}번 테이블"
-            for (detail in shoppingListViewModel.shoppingList.value!!) {
-                details.add(OrderDetail(productId = detail.productId, quantity = detail.quantity))
-                totalQuantity += detail.quantity
-            }
-        }
-
-        makeOrder(order)
-        requireContext().showToastMessage("주문이 완료되었습니다.");
-
-        // 알림판에 정보를 집어넣기 위해 view model 이용
-        order.totalQuantity = totalQuantity
-        // 여러 개 주문의 경우 마지막 상품을 대표 상품으로 텍스트 표시 => 최근 주문내역에 표시되는 것과 동일
-        order.topProductName =
-            shoppingListViewModel.shoppingList.value!![shoppingListViewModel.shoppingList.value!!.size - 1].productName
-        noticeViewModel.noticeInsert(order)
-
-
-        // 장바구니 초기화 -> 추후 livedata로 바뀔 시 수정 필요
-        shoppingListViewModel.shoppingListClear()
-
-        mainActivity.supportFragmentManager.beginTransaction()
-            .replace(R.id.frame_layout_main, OrderFragment())
-            .commit()
-    }
-
-    private fun makeOrder(order: Order) {
-        orderViewModel.makeOrder(order)
     }
 }
