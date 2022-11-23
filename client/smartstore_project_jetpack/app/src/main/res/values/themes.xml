@@ -34,7 +34,7 @@
     <style name="Text.Regular" parent="android:TextAppearance">
         <item name="android:textStyle">normal</item>
         <item name="android:textColor">@color/black</item>
-        <item name="android:fontFamily">@font/eland_choice_m</item>
+        <item name="android:fontFamily">@font/leferi_base_regular</item>
         <item name="android:includeFontPadding">false</item>
     </style>
     <style name="Text.Title" parent="android:TextAppearance">
