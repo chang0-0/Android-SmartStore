@@ -5,7 +5,23 @@
   <link rel="self" href="https://spring.io/blog.atom" />
   <id>http://spring.io/blog.atom</id>
   <icon>https://spring.io/favicon.ico</icon>
-  <updated>2022-11-22T19:00:00Z</updated>
+  <updated>2022-11-23T08:00:00Z</updated>
+  <entry>
+    <title>Spring Tips: the road to Spring Framework 6: the new Ahead-of-Time Compilation Engine and GraalVM</title>
+    <link rel="alternate" href="https://spring.io/blog/2022/11/23/spring-tips-the-road-to-spring-framework-6-the-new-ahead-of-time-compilation-engine-and-graalvm" />
+    <category term="engineering" label="Engineering" />
+    <author>
+      <name>Josh Long</name>
+    </author>
+    <id>tag:spring.io,2022-11-21:5001</id>
+    <updated>2022-11-23T08:00:00Z</updated>
+    <content type="html">&lt;p&gt;Hi, Spring fans! Spring Boot 3 is here (or will be tomorrow, on the &lt;strong&gt;24th of November, 2022&lt;/strong&gt;, to be more precise!), bringing a fantastic new Ahead-of-Time (AOT) compilation engine that supports GraalVM native images. Join me, and we&amp;rsquo;ll dive deep into the engine and its interactions with the Spring component model. &lt;/p&gt;
+&lt;p&gt;This video is a detailed masterclass on the new AOT engine. It starts by examining the everyday usecases of an application developer and delves deeper and deeper into the engine, treating concerns that library and framework developers will care about. &lt;/p&gt;
+&lt;p&gt;Enjoy! &lt;/p&gt;
+&lt;iframe width="560" height="315" src="https://www.youtube.com/embed/TOfYlLjXufw" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen&gt;&lt;/iframe&gt;
+&lt;p&gt;Also, Happy thanksgiving (if you celebrate) from us to you!&lt;/p&gt;
+&lt;!-- rendered by Sagan Renderer Service --&gt;</content>
+  </entry>
   <entry>
     <title>This Week in Spring - November 22nd, 2022 - Spring Boot 3 and Thanksgiving edition!</title>
     <link rel="alternate" href="https://spring.io/blog/2022/11/22/this-week-in-spring-november-22nd-2022-spring-boot-3-and-thanksgiving-edition" />
@@ -732,40 +748,6 @@ dependencies {&#xD;
 &lt;p&gt;Thanks to all those who have contributed with issue reports and pull requests. We&amp;rsquo;re nearly there!!&lt;/p&gt;&lt;h3&gt;&lt;a href="#how-can-you-help" class="anchor" name="how-can-you-help"&gt;&lt;/a&gt;How can you help?&lt;/h3&gt;
 &lt;p&gt;If you&amp;rsquo;re interested in helping out, check out the &lt;a href="https://github.com/spring-projects/spring-boot/labels/status%3A%20ideal-for-contribution"&gt;&amp;ldquo;ideal for contribution&amp;rdquo; tag&lt;/a&gt; in the issue repository. If you have general questions, please ask on &lt;a href="https://stackoverflow.com"&gt;stackoverflow.com&lt;/a&gt; using the &lt;a href="https://stackoverflow.com/tags/spring-boot"&gt;&lt;code&gt;spring-boot&lt;/code&gt; tag&lt;/a&gt; or chat with the community on &lt;a href="https://gitter.im/spring-projects/spring-boot"&gt;Gitter&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;a href="https://spring.io/projects/spring-boot/"&gt;Project Page&lt;/a&gt; | &lt;a href="https://github.com/spring-projects/spring-boot"&gt;GitHub&lt;/a&gt; | &lt;a href="https://github.com/spring-projects/spring-boot/issues"&gt;Issues&lt;/a&gt; | &lt;a href="https://docs.spring.io/spring-boot/docs/3.0.0-RC2/reference/html"&gt;Documentation&lt;/a&gt; | &lt;a href="https://stackoverflow.com/questions/tagged/spring-boot"&gt;Stack Overflow&lt;/a&gt; | &lt;a href="https://gitter.im/spring-projects/spring-boot"&gt;Gitter&lt;/a&gt;&lt;/p&gt;
-&lt;!-- rendered by Sagan Renderer Service --&gt;</content>
-  </entry>
-  <entry>
-    <title>Updates on Spring Cloud Stream 4.0.0 Schema Registry Support</title>
-    <link rel="alternate" href="https://spring.io/blog/2022/11/10/updates-on-spring-cloud-stream-4-0-0-schema-registry-support" />
-    <category term="engineering" label="Engineering" />
-    <author>
-      <name>Soby Chacko</name>
-    </author>
-    <id>tag:spring.io,2022-11-08:4986</id>
-    <updated>2022-11-10T08:00:00Z</updated>
-    <content type="html">&lt;p&gt;This blog gives an update on the Schema Registry support that is part of Spring Cloud Stream version 4.0.x. &lt;/p&gt;
-&lt;p&gt;Many enterprises use a schema registry for schema evolution use cases, such as the &lt;a href="https://docs.confluent.io/platform/current/schema-registry/index.html"&gt;Confluent Schema Registry&lt;/a&gt;. Starting with version &lt;code&gt;1.1.x&lt;/code&gt; of Spring Cloud Stream until &lt;code&gt;3.0.0&lt;/code&gt;, we provided a schema registry server and AVRO-based schema registry client converters that can reconcile the schema from the schema registry server. Spring Cloud Stream version 3.0.0 moved the Schema Registry components into a top-level &lt;a href="https://spring.io/projects/spring-cloud-schema-registry"&gt;spring-cloud project&lt;/a&gt;, and Spring Cloud Stream included those in its &lt;a href="https://github.com/spring-cloud/spring-cloud-stream-starters/blob/vHorsham.RELEASE/spring-cloud-stream-dependencies/pom.xml#L41"&gt;BOM&lt;/a&gt; for the end user applications to consume them. However, this didn&amp;rsquo;t scale well, and with the 3.2 version, we decided to stop having them as part of the &lt;a href="https://github.com/spring-cloud/spring-cloud-stream-starters/blob/v3.2.0/spring-cloud-stream-dependencies/pom.xml"&gt;Spring Cloud Stream BOM&lt;/a&gt;. &lt;/p&gt;
-&lt;p&gt;The schema registry use cases are compelling in streaming applications, and the community has been keen on having a solution from the core Spring Cloud Stream. We are glad to inform you that the schema registry components are back in the &lt;a href="https://github.com/spring-cloud/spring-cloud-stream/tree/main/schema-registry"&gt;4.0.0 version of Spring Cloud Stream&lt;/a&gt;. This path is a full-circle journey for these schema registry components. Below, we will re-introduce these components and briefly overview their features.&lt;/p&gt;&lt;h2&gt;&lt;a href="#spring-cloud-stream-schema-registry-server" class="anchor" name="spring-cloud-stream-schema-registry-server"&gt;&lt;/a&gt;Spring Cloud Stream Schema Registry Server&lt;/h2&gt;
-&lt;p&gt;Spring Cloud Stream &lt;code&gt;4.0.x&lt;/code&gt; versions ship a standalone Schema Registry server tailored exclusively for the use cases that Spring Cloud Stream addresses. These use cases encompass schema evolution across multiple schema versions. The main gist of these use cases is that a producer application publishes using a previous schema version. Still, the consumer works against all the schema versions in a backward-compatible manner. These workflows include schema validation and using the validated schema as a contract and the basis for data serialization by the message converters. We do not recommend using this Schema Registry server outside Spring Cloud Stream. By default, this Schema Registry Server uses an in-memory H2 database as the backend store. However, you can use either Postgres or MySQL as the backend databases. Spring Cloud Stream provides this Schema Registry server as a full-blown Spring Boot application. Therefore you can download this from maven central directly (when Spring Cloud Stream &lt;code&gt;4.0.0&lt;/code&gt; will be generally available). If you want to try this on snapshots or milestones, you can download this from the relevant Artifactory repository. Following are the maven coordinates for &lt;code&gt;4.0.0-SNAPSHOT&lt;/code&gt; version. You can also use &lt;code&gt;4.0.0-M5&lt;/code&gt; or &lt;code&gt;4.0.0-RC1&lt;/code&gt; if you prefer not to use a snapshot to test. &lt;/p&gt;
-&lt;pre&gt;&lt;code class="prettyprint"&gt;&amp;lt;dependency&amp;gt;&#xD;
-	&amp;lt;groupId&amp;gt;org.springframework.cloud&amp;lt;/groupId&amp;gt;&#xD;
-	&amp;lt;artifactId&amp;gt;spring-cloud-stream-schema-registry-server&amp;lt;/artifactId&amp;gt;&#xD;
-	&amp;lt;version&amp;gt;4.0.0-SNAPSHOT&amp;lt;/version&amp;gt;&#xD;
-&amp;lt;/dependency&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Suppose you want to use something other than the standalone Schema Registry server but a custom one. In that case, you can include the server module as a dependency in your application and create a custom Spring Boot application by enabling &lt;code&gt;@EnableSchemaRegistryServer.&lt;/code&gt; If you have an unsupported backend store, you should use this strategy.&lt;/p&gt;&lt;h2&gt;&lt;a href="#spring-cloud-stream-schema-registry-client" class="anchor" name="spring-cloud-stream-schema-registry-client"&gt;&lt;/a&gt;Spring Cloud Stream Schema Registry Client&lt;/h2&gt;
-&lt;p&gt;Spring Cloud Stream &lt;code&gt;4.0.0&lt;/code&gt; also provides a Schema Registry client module that provides AVRO-based message converters. These converters are Schema Registry aware and communicate with a Schema Registry server to reconcile the schema while converting the payload for serialization purposes. Applications need to use an annotation &lt;code&gt;@EnableSchemaRegistryClient&lt;/code&gt; to make them aware of the schema registry server through the &lt;code&gt;SchemaRegistryClient&lt;/code&gt; bean. Spring Boot auto-configures the AVRO-based message converters that are schema-registry aware. &lt;/p&gt;
-&lt;p&gt;Following are the maven coordinates of the schema registry client module for version &lt;code&gt;4.0.0-SNAPSHOT&lt;/code&gt;. You may use &lt;code&gt;4.0.0-M5&lt;/code&gt; or &lt;code&gt;4.0.0-RC1&lt;/code&gt; as well.&lt;/p&gt;
-&lt;pre&gt;&lt;code class="prettyprint"&gt;&amp;lt;dependency&amp;gt;&#xD;
-	&amp;lt;groupId&amp;gt;org.springframework.cloud&amp;lt;/groupId&amp;gt;&#xD;
-	&amp;lt;artifactId&amp;gt;spring-cloud-stream-schema-registry-client&amp;lt;/artifactId&amp;gt;&#xD;
-	&amp;lt;version&amp;gt;4.0.0-SNAPSHOT&amp;lt;/version&amp;gt;&#xD;
-&amp;lt;/dependency&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;h2&gt;&lt;a href="#using-the-confluent-schema-registry-server-with-spring-cloud-stream-schema-registry-client" class="anchor" name="using-the-confluent-schema-registry-server-with-spring-cloud-stream-schema-registry-client"&gt;&lt;/a&gt;Using the Confluent Schema Registry Server with Spring Cloud Stream Schema Registry Client&lt;/h2&gt;
-&lt;p&gt;Confluent Schema Registry is a popular commercial solution for schema evolution for Kafka-based applications. Spring Cloud Stream AVRO message converters mentioned above can work with the Confluent Schema Registry. For this to work, the application needs to override the &lt;code&gt;SchemaRegistryClient&lt;/code&gt; bean and provide an implementation for &lt;code&gt;ConfluentSchemaRegistryClient.&lt;/code&gt; &lt;/p&gt;&lt;h2&gt;&lt;a href="#resources" class="anchor" name="resources"&gt;&lt;/a&gt;Resources&lt;/h2&gt;
-&lt;p&gt;We provide a set of sample applications demonstrating all the concepts described in this blog &lt;a href="https://github.com/spring-cloud/spring-cloud-stream/tree/main/samples/spring-cloud-stream-schema-registry-integration"&gt;here&lt;/a&gt;. Please see the &lt;a href="https://github.com/spring-cloud/spring-cloud-stream/blob/main/samples/spring-cloud-stream-schema-registry-integration/README.adoc"&gt;README&lt;/a&gt; for more details. &lt;/p&gt;
-&lt;p&gt;&lt;a href="https://docs.spring.io/spring-cloud-stream/docs/4.0.0-SNAPSHOT/reference/html/spring-cloud-stream-schema-registry.html#spring-cloud-stream-schema-registry-referenc"&gt;Here&lt;/a&gt; is the Schema Registry reference documentation.&lt;/p&gt;&lt;h2&gt;&lt;a href="#conclusion" class="anchor" name="conclusion"&gt;&lt;/a&gt;Conclusion&lt;/h2&gt;
-&lt;p&gt;Spring Cloud Stream &lt;code&gt;4.0.0&lt;/code&gt; brings back the Schema Registry components from previous versions of Spring Cloud Stream. This blog examined the motivations and overview of the re-introduced support. The support available in Spring Cloud Stream may only cover some of the schema evolution use cases. However, the provided schema registry components can support many schema evolution use cases that come under the purview of Spring Cloud Stream applications with a transport-neutral value add. &lt;/p&gt;
 &lt;!-- rendered by Sagan Renderer Service --&gt;</content>
   </entry>
 </feed>
