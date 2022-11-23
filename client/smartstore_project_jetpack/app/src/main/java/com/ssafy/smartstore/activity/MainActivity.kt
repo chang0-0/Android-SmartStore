@@ -238,7 +238,7 @@ class MainActivity : AppCompatActivity() {
             .replace(R.id.frame_layout_main, HomeFragment())
             .commit()
 
-        showToastMessage("주문 완료되었습니다.")
+        showToastMessage("${newActivityViewModel.tableId}번 테이블 주문 완료되었습니다.")
         newActivityViewModel.tableIdSet("")
     }
 
