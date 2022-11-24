@@ -21,6 +21,7 @@ import com.ssafy.smartstore.adapter.AdapterItemClickListener
 import com.ssafy.smartstore.adapter.OrderAdapter
 import com.ssafy.smartstore.config.ApplicationClass
 import com.ssafy.smartstore.databinding.FragmentMypageBinding
+import com.ssafy.smartstore.dto.Grade
 import com.ssafy.smartstore.dto.User
 import com.ssafy.smartstore.response.LatestOrderResponse
 import com.ssafy.smartstore.viewModels.OrderViewModel
@@ -152,8 +153,18 @@ class MypageFragment : Fragment() {
 
     private fun createQRCode(): Bitmap {
         // qrcode에 담을 text를 입력
-        val userIdToCode: String = userViewModel.userData.value!!.id
-        return BarcodeEncoder().encodeBitmap(userIdToCode, BarcodeFormat.QR_CODE, 512, 512)
+        val userIdToCode: User = userViewModel.userData.value!!
+        val userGrade: Grade = userViewModel.userGrade.value!!
+
+
+        val 회원정보텍스트: String = "id : ${userIdToCode.id} , 등급 : ${userGrade.title} "
+
+        return BarcodeEncoder().encodeBitmap(
+            회원정보텍스트.toString(),
+            BarcodeFormat.QR_CODE,
+            512,
+            512
+        )
     } // End of createQRCode
 
 } // End of MypageFragment class
