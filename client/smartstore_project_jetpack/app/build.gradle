@@ -29,10 +29,10 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
-    dataBinding{
+    dataBinding {
         enabled = true
     }
-    viewBinding{
+    viewBinding {
         enabled = true
     }
 }
@@ -92,8 +92,5 @@ dependencies {
 
     // TedPermission
     implementation 'io.github.ParkSangGwon:tedpermission-normal:3.3.0'
-
-    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
-
 
 }

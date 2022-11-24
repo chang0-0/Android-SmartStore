@@ -2,6 +2,23 @@
 
 <layout>
 
+    <data>
+
+        <variable
+                name="loginViewModel"
+                type="com.ssafy.smartstore.viewModels.LoginViewModel" />
+
+
+        <variable
+                name="joinFragment"
+                type="com.ssafy.smartstore.fragment.JoinFragment" />
+
+        <variable
+                name="userDto"
+                type="com.ssafy.smartstore.dto.User" />
+
+    </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
             xmlns:tools="http://schemas.android.com/tools"
@@ -28,9 +45,14 @@
         <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/idTextField"
                 android:layout_width="0dp"
+                app:counterMaxLength="30"
+                android:maxLength="30"
+                app:counterEnabled="true"
+                app:errorEnabled="true"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_height="wrap_content"
                 android:hint="아이디를 입력하세요"
+                app:boxStrokeColor="@color/textinput_default_stroke_color"
                 android:layout_marginTop="10dp"
                 app:helperTextTextAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
                 app:layout_constraintTop_toBottomOf="@id/joinTitleTv"
@@ -62,25 +84,30 @@
                 app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginLeft="30dp"
                 android:layout_marginRight="30dp"
+                app:endIconMode="password_toggle"
+                app:boxStrokeColor="@color/textinput_default_stroke_color"
                 app:errorIconDrawable="@drawable/ic_error"
                 app:layout_constraintEnd_toEndOf="parent">
 
             <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editTextJoinPW"
+                    android:singleLine="true"
                     android:backgroundTint="@color/white"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:inputType="textPersonName|textNoSuggestions"
+                    android:inputType="textPassword"
                     android:fontFamily="@font/ptserif_regular"
                     android:maxLines="1" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+                app:endIconMode="clear_text"
                 android:id="@+id/nameTextField"
                 android:layout_width="0dp"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_height="wrap_content"
                 android:hint="닉네임을 입력해주세요"
+                app:boxStrokeColor="@color/textinput_default_stroke_color"
                 android:layout_marginTop="10dp"
                 app:helperTextTextAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
                 app:layout_constraintTop_toBottomOf="@id/pwTextField"
@@ -108,13 +135,14 @@
                 android:layout_width="140dp"
                 android:layout_height="wrap_content"
                 android:text="sign up"
+                android:onClick="@{() -> joinFragment.userJoinSetOnClickListener()}"
                 app:layout_constraintTop_toBottomOf="@+id/nameTextField"
                 android:layout_marginTop="20dp"
                 app:layout_constraintStart_toStartOf="@+id/nameTextField"
                 app:layout_constraintEnd_toEndOf="@+id/nameTextField" />
 
-
         <ImageView
+                android:onClick="@{() -> joinFragment.userIdCheckSetOnClickListener() }"
                 android:id="@+id/checkIdButton"
                 android:layout_width="57dp"
                 android:layout_height="49dp"
@@ -126,7 +154,6 @@
                 android:layout_marginStart="72dp"
                 app:layout_constraintTop_toTopOf="@+id/joinTitleTv"
                 android:layout_marginTop="84dp" />
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

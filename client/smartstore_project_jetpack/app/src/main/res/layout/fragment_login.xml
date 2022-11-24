@@ -47,13 +47,16 @@
                 android:layout_width="0dp"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_height="wrap_content"
-                android:hint="아이디를 입력하세요"
+                android:hint="ID를 입력해주세요"
                 android:layout_marginTop="10dp"
                 app:helperTextTextAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
                 app:layout_constraintTop_toBottomOf="@id/loginTitleTv"
                 app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginLeft="30dp"
                 android:layout_marginRight="30dp"
+                android:maxLength="30"
+                app:endIconMode="clear_text"
+                app:boxStrokeColor="@color/textinput_default_stroke_color"
                 app:errorIconDrawable="@drawable/ic_error"
                 app:layout_constraintEnd_toEndOf="parent">
 
@@ -70,6 +73,7 @@
         <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/pwTextField"
                 android:layout_width="0dp"
+                app:endIconMode="password_toggle"
                 android:layout_height="wrap_content"
                 android:hint="비밀번호를 입력해주세요"
                 app:errorIconDrawable="@drawable/ic_error"
@@ -79,6 +83,7 @@
                 android:layout_marginTop="20dp"
                 app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginLeft="30dp"
+                app:boxStrokeColor="@color/textinput_default_stroke_color"
                 android:layout_marginRight="30dp"
                 app:layout_constraintEnd_toEndOf="parent">
 
@@ -88,7 +93,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:backgroundTint="@color/white"
-                    android:inputType="textPersonName|textNoSuggestions"
+                    android:inputType="textPassword"
+                    android:singleLine="true"
                     android:maxLines="1" />
         </com.google.android.material.textfield.TextInputLayout>
 

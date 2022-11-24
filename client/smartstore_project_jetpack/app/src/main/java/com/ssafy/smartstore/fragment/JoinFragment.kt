@@ -2,9 +2,13 @@ package com.ssafy.smartstore.fragment
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
+import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.addTextChangedListener
+import androidx.core.widget.doOnTextChanged
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -18,7 +22,7 @@ import com.ssafy.smartstore.viewModels.LoginViewModel
 // 회원 가입 화면
 private const val TAG = "JoinFragment_싸피"
 
-class JoinFragment : Fragment() {
+class JoinFragment : Fragment() { // End of JoinFragment
     lateinit var binding: FragmentJoinBinding
     private lateinit var loginActivity: LoginActivity
     private val loginViewModel by activityViewModels<LoginViewModel>()
@@ -34,6 +38,7 @@ class JoinFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_join, container, false)
+        binding.joinFragment = this
         return binding.root
     }
 
@@ -44,34 +49,42 @@ class JoinFragment : Fragment() {
         //id 중복 확인 버튼을 눌렀을 때, Api를 call해서 중복체크를 함.
         // 중복체크를 한 결과를 Boolean값으로 받아와서 loginViewModel의 _isUsedId.value를 갱신해준다.
         // 이 값이 갱신되면 observer가 value가 변한것을 감지해서 Toast Message를 띄운다.
-        binding.checkIdButton.setOnClickListener {
-            if (binding.editTextJoinID.text!!.isEmpty()) {
-                view.showSnackBarMessage("아이디를 입력해주세요")
-            } else {
-                loginViewModel.checkUsedId(binding.editTextJoinID.text.toString())
-            }
+        binding.editTextJoinID.addTextChangedListener {
+            userIdCheckSetOnClickListener()
         }
-
 
         // 회원가입 버튼
         binding.btnJoin.setOnClickListener {
-            if (!emptyEditTextCheck()) {
-
-            } else {
-                val user = User().apply {
-                    id = binding.editTextJoinID.text.toString()
-                    pass = binding.editTextJoinPW.text.toString()
-                    name = binding.editTextJoinName.text.toString()
-                }
-
-                // 마지막 Id 중복 체크에 성공했을 경우에만 로그인 진행.
-                loginViewModel.joinUser(user)
-            }
+            userJoinSetOnClickListener()
         }
 
         isUsedIdObserver()
         isCompleteJoinObserver()
     } // End of onViewCreated
+
+    fun userIdCheckSetOnClickListener() {
+        Log.d(TAG, "이거 계속 돌아가긴 함?")
+        if (binding.editTextJoinID.text!!.isEmpty()) {
+            view!!.showSnackBarMessage("아이디를 입력해주세요")
+        } else {
+            loginViewModel.checkUsedId(binding.editTextJoinID.text.toString())
+        }
+    } // End of userIdCheckSetOnClickListener
+
+    fun userJoinSetOnClickListener() {
+        if (!emptyEditTextCheck()) {
+
+        } else {
+            val user = User().apply {
+                id = binding.editTextJoinID.text.toString()
+                pass = binding.editTextJoinPW.text.toString()
+                name = binding.editTextJoinName.text.toString()
+            }
+
+            // 마지막 Id 중복 체크에 성공했을 경우에만 로그인 진행.
+            loginViewModel.joinUser(user)
+        }
+    } // End of userJoinSetOnClickListener
 
     private fun finalIsUsedIdCheck(): Boolean {
         if (loginViewModel.isUsedId.value == false) {
@@ -86,13 +99,29 @@ class JoinFragment : Fragment() {
             if (it == true) {
                 view!!.showSnackBarMessage("회원가입 되었습니다. 환영합니다.")
                 loginViewModel.stateChange()
-
                 loginActivity.openFragment(3)
             } else if (it == false) {
                 view!!.showSnackBarMessage("회원가입에 실패하였습니다.")
             }
         }
     } // End of isCompleteJoinObserver
+
+    private fun checkEmail(): Boolean {
+        var result: Boolean = false
+        val emailInputText = binding.editTextJoinID.text.toString()
+        binding.editTextJoinID.doOnTextChanged { text, start, before, count ->
+            if (!Patterns.EMAIL_ADDRESS.matcher(emailInputText).matches()) {
+
+                result = false
+            } else {
+                binding.editTextJoinID.error = null
+                result = true
+            }
+        }
+
+        return result
+    } // End of checkEmail
+
 
     private fun isUsedIdObserver() {
         // observe는 버튼이 클릭될 때 마다 생성되므로, observer는 한번만 생성되도록 하는것이 맞다.
@@ -105,8 +134,13 @@ class JoinFragment : Fragment() {
                     view!!.showSnackBarMessage("이미 사용중인 아이디 입니다.")
                     binding.checkIdButton.setImageResource(R.drawable.ic_check_fail2)
                     loginActivity.setVibrate()
+                    binding.idTextField.boxStrokeColor =
+                        resources.getColor(R.color.textinput_error_stroke_color)
+                    binding.editTextJoinID.error = "이미 사용중인 아이디입니다."
                 } else {
-                    view!!.showSnackBarMessage("사용 가능한 아이디 입니다.")
+                    // view!!.showSnackBarMessage("사용 가능한 아이디 입니다.")
+                    binding.idTextField.boxStrokeColor =
+                        resources.getColor(R.color.textinput_default_stroke_color)
                     binding.checkIdButton.setImageResource(R.drawable.ic_check_success)
                 }
             }
@@ -133,5 +167,4 @@ class JoinFragment : Fragment() {
         binding.editTextJoinPW.clearFocus()
         binding.editTextJoinName.clearFocus()
     } // End of initJoinFragment
-
-} // End of JoinFragment
+}
