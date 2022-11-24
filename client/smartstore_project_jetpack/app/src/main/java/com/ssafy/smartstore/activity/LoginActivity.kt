@@ -8,22 +8,25 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import androidx.activity.viewModels
 import androidx.core.content.getSystemService
+import androidx.databinding.DataBindingUtil
 import com.ssafy.smartstore.fragment.JoinFragment
 import com.ssafy.smartstore.fragment.LoginFragment
 import com.ssafy.smartstore.R
 import com.ssafy.smartstore.config.ApplicationClass.Companion.sharedPreferencesUtil
+import com.ssafy.smartstore.databinding.ActivityLoginBinding
 import com.ssafy.smartstore.viewModels.LoginViewModel
 import com.ssafy.smartstore.viewModels.UserViewModel
 
 private const val TAG = "LoginActivity_싸피"
 
 class LoginActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityLoginBinding
     private val loginViewModel: LoginViewModel by viewModels()
-    private lateinit var vibrate : Vibrator
+    private lateinit var vibrate: Vibrator
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_login)
 
         //로그인 된 상태인지 확인
         var user = sharedPreferencesUtil.getUser()

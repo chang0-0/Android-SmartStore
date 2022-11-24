@@ -1,26 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".activity.MainActivity">
 
+<layout>
 
-    <FrameLayout
-            android:id="@+id/frame_layout_main"
-            android:layout_above="@id/tab_layout_bottom_navigation"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            tools:context=".activity.MainActivity">
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/tab_layout_bottom_navigation"
-            android:layout_alignParentBottom="true"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/BottomNavigation"
-            android:background="#434343"
-            app:labelVisibilityMode="unlabeled"
-            app:menu="@menu/bottom_nav" />
 
-</RelativeLayout>
+        <FrameLayout
+                android:id="@+id/frame_layout_main"
+                android:layout_above="@id/tab_layout_bottom_navigation"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+                android:id="@+id/tab_layout_bottom_navigation"
+                android:layout_alignParentBottom="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/BottomNavigation"
+                android:background="#434343"
+                app:labelVisibilityMode="unlabeled"
+                app:menu="@menu/bottom_nav" />
+
+    </RelativeLayout>
+
+</layout>
+

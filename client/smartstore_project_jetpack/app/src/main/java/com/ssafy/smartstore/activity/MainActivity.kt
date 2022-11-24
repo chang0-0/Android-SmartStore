@@ -16,6 +16,8 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
+import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -45,7 +47,15 @@ class MainActivity : AppCompatActivity() {
     private lateinit var filters: Array<IntentFilter>
     private lateinit var pIntent: PendingIntent
     private val newActivityViewModel: MainViewModel by viewModels()
-    private val userViewModel by lazy { ViewModelProvider(this, UserViewModel.Factory(this.application, ApplicationClass.sharedPreferencesUtil.getUser().id))[UserViewModel::class.java] }
+    private val userViewModel by lazy {
+        ViewModelProvider(
+            this,
+            UserViewModel.Factory(
+                this.application,
+                ApplicationClass.sharedPreferencesUtil.getUser().id
+            )
+        )[UserViewModel::class.java]
+    }
     private val shoppingListViewModel by lazy {
         ViewModelProvider(
             this,
@@ -71,9 +81,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        // 가장 첫 화면은 홈 화면의 Fragment로 지정
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
         setNdef()
 
@@ -225,7 +233,7 @@ class MainActivity : AppCompatActivity() {
         setIntent(intent)
         getNFCData(getIntent())
 
-        if(newActivityViewModel.flag)
+        if (newActivityViewModel.flag)
             orderCompletedThenGoToMain()
     }
 

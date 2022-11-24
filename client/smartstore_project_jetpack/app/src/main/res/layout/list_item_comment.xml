@@ -39,22 +39,20 @@
 
         <ImageView
                 android:id="@+id/iv_modify_accept_comment"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
                 android:layout_marginEnd="5dp"
-                android:background="@drawable/button_regular"
-                app:backgroundTint="@null"
-                app:srcCompat="@android:drawable/ic_menu_save"
+                android:tint="@color/black"
+                app:srcCompat="@drawable/ic_comment_save"
                 tools:visibility="gone" />
 
         <ImageView
                 android:id="@+id/iv_modify_cancel_comment"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
                 android:layout_marginEnd="5dp"
-                android:background="@drawable/button_regular"
-                app:backgroundTint="@null"
-                app:srcCompat="@android:drawable/ic_menu_revert"
+                android:tint="@color/black"
+                app:srcCompat="@drawable/ic_comment_back"
                 tools:visibility="gone" />
 
         <ImageView
@@ -63,7 +61,8 @@
                 android:layout_height="26dp"
                 android:tint="@color/black"
                 android:layout_marginRight="12dp"
-                android:src="@drawable/ic_remove"
+                android:src="@drawable/ic_modify"
+                tools:visibility="visible"
                 app:backgroundTint="@null" />
 
         <ImageView
@@ -71,7 +70,8 @@
                 android:layout_width="26dp"
                 android:layout_height="26dp"
                 android:tint="@color/black"
-                android:src="@drawable/ic_modify"
+                android:src="@drawable/ic_remove"
+                tools:visibility="visible"
                 app:backgroundTint="@null" />
 
 
