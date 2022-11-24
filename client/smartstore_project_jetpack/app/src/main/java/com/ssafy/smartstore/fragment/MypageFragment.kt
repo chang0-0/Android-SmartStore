@@ -3,7 +3,9 @@ package com.ssafy.smartstore.fragment
 import android.app.AlertDialog
 import android.content.Context
 import android.graphics.Bitmap
+import android.os.Build.VERSION_CODES.N
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -157,15 +159,31 @@ class MypageFragment : Fragment() {
         val userIdToCode: User = userViewModel.userData.value!!
         val userGrade: Grade = userViewModel.userGrade.value!!
 
+        val id = blankCheck(userViewModel.userData.value!!.id.toString())
 
+        val url: String = "${ApplicationClass.SERVER_URL}/rest/user/info?id=${id}"
         val 회원정보텍스트: String = "id : ${userIdToCode.id} , 등급 : ${userGrade.title} "
 
         return BarcodeEncoder().encodeBitmap(
-            회원정보텍스트.toString(),
+            url.toString(),
             BarcodeFormat.QR_CODE,
             512,
             512
         )
     } // End of createQRCode
 
+    private fun blankCheck(userId: String): String {
+        val blank = "%20"
+        var temp = ""
+
+        for ((index, value) in userId.withIndex()) {
+            if (value.toString() == " ") {
+                temp += blank
+            } else {
+                temp += value.toString()
+            }
+        }
+
+        return temp
+    } // End of blackCheck
 } // End of MypageFragment class
