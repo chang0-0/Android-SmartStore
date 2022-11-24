@@ -114,6 +114,7 @@ class MypageFragment : Fragment() {
         grade.observe(viewLifecycleOwner) {
             Glide.with(this)
                 .load("${ApplicationClass.GRADE_IMGS_URL}${grade.value!!.img}")
+                .into(binding.imageLevel)
 
             binding.textUserLevel.text = "${grade.value!!.title} ${grade.value!!.step}단계"
             binding.textLevelRest.text = "다음 레벨까지 ${grade.value!!.to}잔 남았습니다."
