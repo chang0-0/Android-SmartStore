@@ -21,6 +21,7 @@
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
+            android:hardwareAccelerated="true"
             android:name="com.ssafy.smartstore.config.ApplicationClass"
             android:allowBackup="true"
             android:icon="@mipmap/ic_launcher"

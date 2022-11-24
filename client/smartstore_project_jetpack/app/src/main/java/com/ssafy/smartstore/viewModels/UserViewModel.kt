@@ -38,23 +38,14 @@ class UserViewModel(private val userRepository: UserRepository, userId: String) 
     suspend fun getUserData(userId: String) = viewModelScope.launch {
         val response = userRepository.getUserData(userId)
 
-        Log.d(TAG, "ViewModel getUserData:${response} ")
-        Log.d(TAG, "ViewModel getUserData:${response.body()} ")
-
         if (response.isSuccessful) {
 //            val result = response.body()
             val userInfoResponse = response.body()
             val result = userInfoResponse!!.user
             val grade = userInfoResponse!!.grade
-
             _userGrade.value = grade
-            Log.d(TAG, "getUserData: grade: $grade")
-
-
 
             _userData.value = result
-            Log.d(TAG, "getUserData: $result ")
-
             withContext(Main) {
                 if (result != null) {
                     Log.d(TAG, "getUserData: ${result}")

@@ -7,17 +7,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ssafy.smartstore.activity.MainActivity
 import com.ssafy.smartstore.adapter.AdapterItemClickListener
 import com.ssafy.smartstore.adapter.MenuAdapter
-import com.ssafy.smartstore.databinding.FragmentOrderBinding
+import com.ssafy.smartstore.databinding.FragmentMenuBinding
 import com.ssafy.smartstore.dto.Product
 import com.ssafy.smartstore.util.RetrofitCallback
-import com.ssafy.smartstore.viewModels.MapViewModel
 import com.ssafy.smartstore.viewModels.ProductViewModel
 
 // 하단 주문 탭
@@ -26,7 +24,7 @@ private const val TAG = "OrderFragment_싸피"
 class OrderFragment : Fragment() {
     private lateinit var menuAdapter: MenuAdapter
     private lateinit var mainActivity: MainActivity
-    private lateinit var binding: FragmentOrderBinding
+    private lateinit var binding: FragmentMenuBinding
     private val productViewModel by lazy { ViewModelProvider(mainActivity, ProductViewModel.Factory(mainActivity.application))[ProductViewModel::class.java]}
     private lateinit var list: List<Product>
 
@@ -47,7 +45,7 @@ class OrderFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentOrderBinding.inflate(inflater, container, false)
+        binding = FragmentMenuBinding.inflate(inflater, container, false)
         return binding.root
     }
 

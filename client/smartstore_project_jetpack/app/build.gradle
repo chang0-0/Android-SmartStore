@@ -93,4 +93,8 @@ dependencies {
     // TedPermission
     implementation 'io.github.ParkSangGwon:tedpermission-normal:3.3.0'
 
+    // QR코드
+    implementation 'com.journeyapps:zxing-android-embedded:3.6.0'
+    //implementation 'androidmads.library.qrgenearator:QRGenearator:1.0.3'
+
 }
