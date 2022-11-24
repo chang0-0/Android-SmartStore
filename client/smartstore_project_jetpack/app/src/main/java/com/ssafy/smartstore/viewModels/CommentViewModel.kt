@@ -8,7 +8,6 @@ import com.ssafy.smartstore.response.MenuDetailWithCommentResponse
 import kotlinx.coroutines.launch
 
 class CommentViewModel(private val repository: StoreRepository, productId: Int) : ViewModel() {
-
     private var _commentList = MutableLiveData<List<MenuDetailWithCommentResponse>>()
     val commentList : LiveData<List<MenuDetailWithCommentResponse>>
         get() = _commentList
