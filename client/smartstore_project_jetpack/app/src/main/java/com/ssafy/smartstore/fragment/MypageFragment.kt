@@ -2,7 +2,6 @@ package com.ssafy.smartstore.fragment
 
 import android.app.AlertDialog
 import android.content.Context
-import android.content.DialogInterface
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -142,12 +141,12 @@ class MypageFragment : Fragment() {
 
     private fun showDialog() {
         val builder = AlertDialog.Builder(requireContext())
-        builder.setTitle("QR CODE")
         val v1 = layoutInflater.inflate(R.layout.custom_dialog, null)
         builder.setView(v1)
-
         val img = v1.findViewById<ImageView>(R.id.qrcodeImageView)
         img.setImageBitmap(createQRCode())
+
+        //mainActivity.changeBrightess()
         builder.show()
     } // End of showDialog
 
@@ -156,4 +155,5 @@ class MypageFragment : Fragment() {
         val userIdToCode: String = userViewModel.userData.value!!.id
         return BarcodeEncoder().encodeBitmap(userIdToCode, BarcodeFormat.QR_CODE, 512, 512)
     } // End of createQRCode
+
 } // End of MypageFragment class

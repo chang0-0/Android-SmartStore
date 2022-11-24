@@ -11,6 +11,7 @@ import android.nfc.NfcAdapter
 import android.nfc.NfcManager
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -49,32 +50,26 @@ class MainActivity : AppCompatActivity() {
     private val newActivityViewModel: MainViewModel by viewModels()
     private val userViewModel by lazy {
         ViewModelProvider(
-            this,
-            UserViewModel.Factory(
-                this.application,
-                ApplicationClass.sharedPreferencesUtil.getUser().id
+            this, UserViewModel.Factory(
+                this.application, ApplicationClass.sharedPreferencesUtil.getUser().id
             )
         )[UserViewModel::class.java]
     }
     private val shoppingListViewModel by lazy {
         ViewModelProvider(
-            this,
-            ShoppingListViewModel.Factory(this.application)
+            this, ShoppingListViewModel.Factory(this.application)
         )[ShoppingListViewModel::class.java]
     }
     private val orderViewModel by lazy {
         ViewModelProvider(
-            this,
-            OrderViewModel.Factory(
-                this.application,
-                ApplicationClass.sharedPreferencesUtil.getUser().id
+            this, OrderViewModel.Factory(
+                this.application, ApplicationClass.sharedPreferencesUtil.getUser().id
             )
         )[OrderViewModel::class.java]
     }
     private val noticeViewModel by lazy {
         ViewModelProvider(
-            this,
-            NoticeViewModel.Factory(this.application)
+            this, NoticeViewModel.Factory(this.application)
         )[NoticeViewModel::class.java]
     }
 
@@ -96,8 +91,7 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.frame_layout_main, HomeFragment())
+        supportFragmentManager.beginTransaction().replace(R.id.frame_layout_main, HomeFragment())
             .commit()
 
         bottomNavigation = binding.tabLayoutBottomNavigation
@@ -105,20 +99,17 @@ class MainActivity : AppCompatActivity() {
             when (item.itemId) {
                 R.id.navigation_page_1 -> {
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.frame_layout_main, HomeFragment())
-                        .commit()
+                        .replace(R.id.frame_layout_main, HomeFragment()).commit()
                     true
                 }
                 R.id.navigation_page_2 -> {
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.frame_layout_main, OrderFragment())
-                        .commit()
+                        .replace(R.id.frame_layout_main, OrderFragment()).commit()
                     true
                 }
                 R.id.navigation_page_3 -> {
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.frame_layout_main, MypageFragment())
-                        .commit()
+                        .replace(R.id.frame_layout_main, MypageFragment()).commit()
                     true
                 }
                 else -> false
@@ -161,19 +152,14 @@ class MainActivity : AppCompatActivity() {
             }
             //주문 상세 보기
             2 -> transaction.replace(
-                R.id.frame_layout_main,
-                OrderDetailFragment.newInstance(key, value)
-            )
-                .addToBackStack(null)
+                R.id.frame_layout_main, OrderDetailFragment.newInstance(key, value)
+            ).addToBackStack(null)
             //메뉴 상세 보기
             3 -> transaction.replace(
-                R.id.frame_layout_main,
-                MenuDetailFragment.newInstance(key, value)
-            )
-                .addToBackStack(null)
+                R.id.frame_layout_main, MenuDetailFragment.newInstance(key, value)
+            ).addToBackStack(null)
             //map으로 가기
-            4 -> transaction.replace(R.id.frame_layout_main, MapFragment())
-                .addToBackStack(null)
+            4 -> transaction.replace(R.id.frame_layout_main, MapFragment()).addToBackStack(null)
             //logout
             5 -> {
                 logout()
@@ -200,8 +186,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setNdef() {
-        var manager: NfcManager =
-            this.getSystemService(Context.NFC_SERVICE) as NfcManager
+        var manager: NfcManager = this.getSystemService(Context.NFC_SERVICE) as NfcManager
         nAdapter = manager.defaultAdapter
 
         val i = Intent(this, MainActivity::class.java)
@@ -233,16 +218,14 @@ class MainActivity : AppCompatActivity() {
         setIntent(intent)
         getNFCData(getIntent())
 
-        if (newActivityViewModel.flag)
-            orderCompletedThenGoToMain()
+        if (newActivityViewModel.flag) orderCompletedThenGoToMain()
     }
 
     private fun orderCompletedThenGoToMain() {
         parseData(intent)
         completedOrder()
 
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.frame_layout_main, HomeFragment())
+        supportFragmentManager.beginTransaction().replace(R.id.frame_layout_main, HomeFragment())
             .commit()
 
         showToastMessage("${newActivityViewModel.tableId}번 테이블 주문 완료되었습니다.")
@@ -313,5 +296,19 @@ class MainActivity : AppCompatActivity() {
         super.onPause()
         nAdapter.disableForegroundDispatch(this)
     }
+
+    private fun changeWritePermission(mainActivity: MainActivity) {
+        val intent = Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS)
+        startActivity(intent)
+    }
+
+    fun changeBrightess() {
+        Settings.System.putInt(
+            this.contentResolver,
+            Settings.System.SCREEN_BRIGHTNESS_MODE,
+            Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL
+        )
+        Settings.System.putInt(this.contentResolver, Settings.System.SCREEN_BRIGHTNESS_MODE, 255)
+    } // End of changeBrightness
 
 }
