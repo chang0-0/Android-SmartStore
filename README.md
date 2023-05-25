@@ -18,7 +18,7 @@
 
 
 ### 회원가입
-
+![아이디_중복_체크_GIF.gif](images/아이디_중복_체크_GIF.gif)
 
 
 ### 로그인
@@ -26,11 +26,11 @@
 
 
 ### 홈 화면
-![login_page.jpg](images/홈 페이지.jpg)
+![홈_페이지.jpg](images/홈_페이지.jpg)
 
 
 ### 메뉴 화면
-![메뉴 화면.jpg](images/메뉴 화면.jpg)
+![메뉴_화면.jpg](images/메뉴_화면.jpg)
 
 
 ### 마이 페이지
@@ -38,17 +38,22 @@
 
 
 ### QR CODE
-![QR코드 GIF.gif](images/QR코드 GIF.gif)
+![QR코드_GIF.gif](images/QR코드_GIF.gif)
 
 
 ### 패키지 
 
 **before**
-![프로젝트 사진 after.jpg](images/프로젝트 사진 after.jpg)
+
+<br>
+
+![프로젝트_패키지_before.jpg](images/프로젝트_패키지_before.jpg)
 
 
 
 **after**
-![프로젝트 사진 before.jpg](images/프로젝트 사진 before.jpg)
 
+<br>
+
+![프로젝트_패키지_after.jpg](images/프로젝트_패키지_after.jpg)
 
