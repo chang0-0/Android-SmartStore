@@ -18,8 +18,37 @@
 
 
 ### 회원가입
-![login_page.jpg](images/login_page.jpg)
+
 
 
 ### 로그인
+![login_page.jpg](images/login_page.jpg)
+
+
+### 홈 화면
+![login_page.jpg](images/홈 페이지.jpg)
+
+
+### 메뉴 화면
+![메뉴 화면.jpg](images/메뉴 화면.jpg)
+
+
+### 마이 페이지
+![마이페이지.jpg](images/마이페이지.jpg)
+
+
+### QR CODE
+![QR코드 GIF.gif](images/QR코드 GIF.gif)
+
+
+### 패키지 
+
+**before**
+![프로젝트 사진 after.jpg](images/프로젝트 사진 after.jpg)
+
+
+
+**after**
+![프로젝트 사진 before.jpg](images/프로젝트 사진 before.jpg)
+
 
