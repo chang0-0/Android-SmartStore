@@ -18,7 +18,7 @@
 
 
 ### 회원가입
-![login_page.jpg](.images/login_page.jpg)
+![login_page.jpg](images/login_page.jpg)
 
 
 ### 로그인
